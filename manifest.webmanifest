@@ -1,0 +1,19 @@
+{
+  "name": "Oraculum — El Libro de los Destinos",
+  "short_name": "Oraculum",
+  "description": "El Oráculo de Napoleón. Traza las rayas, elige tu pregunta y recibe la respuesta del Libro de los Destinos.",
+  "start_url": ".",
+  "scope": ".",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#120C24",
+  "theme_color": "#120C24",
+  "lang": "es-CL",
+  "dir": "ltr",
+  "categories": ["entertainment", "lifestyle", "books"],
+  "icons": [
+    { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "icons/icon-512-maskable.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}

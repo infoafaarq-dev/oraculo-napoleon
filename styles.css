@@ -1,0 +1,421 @@
+/* ============================================================
+   ORACULUM — hoja de estilos
+   Paleta "templo nocturno": índigo profundo, amatista, pan de oro,
+   con un verde de fayenza egipcia como único contrapunto frío.
+   ============================================================ */
+
+:root{
+  --noche:#120C24;
+  --abismo:#0B0718;
+  --velo:#1B1338;
+  --velo-2:#241A48;
+  --borde:#33265E;
+  --amatista:#7A5CC4;
+  --amatista-tenue:#4B3982;
+  --oro:#D9B45B;
+  --oro-claro:#F3DFA8;
+  --oro-tenue:#8A7237;
+  --nacar:#EAE4F7;
+  --tenue:#9C92C0;
+  --nilo:#3FA79A;
+  --granate:#C05A76;
+
+  --display:'Cinzel', 'Times New Roman', serif;
+  --cuerpo:'Spectral', Georgia, serif;
+  --utilitaria:'IBM Plex Mono', ui-monospace, monospace;
+
+  --r:14px;
+  --r-s:8px;
+}
+
+*{box-sizing:border-box;}
+
+html,body{margin:0;padding:0;}
+
+body{
+  min-height:100dvh;
+  background:var(--noche);
+  color:var(--nacar);
+  font-family:var(--cuerpo);
+  font-weight:300;
+  font-size:16px;
+  line-height:1.6;
+  -webkit-font-smoothing:antialiased;
+  padding:0 clamp(14px,3vw,32px) 48px;
+  overflow-x:hidden;
+}
+
+/* Aura de fondo: dos halos que respiran muy lentamente */
+.aura{
+  position:fixed; inset:0; z-index:-1; pointer-events:none;
+  background:
+    radial-gradient(58vw 44vw at 78% 8%,  rgba(122,92,196,.24), transparent 62%),
+    radial-gradient(52vw 40vw at 12% 92%, rgba(217,180,91,.10), transparent 62%),
+    linear-gradient(180deg, var(--noche) 0%, var(--abismo) 100%);
+  animation:respirar 18s ease-in-out infinite alternate;
+}
+@keyframes respirar{ from{opacity:.85;} to{opacity:1;} }
+
+.visually-hidden{
+  position:absolute!important;width:1px;height:1px;overflow:hidden;
+  clip:rect(0 0 0 0);clip-path:inset(50%);white-space:nowrap;
+}
+
+/* ---------------- Cabecera ---------------- */
+.cabecera{
+  max-width:1180px;margin:0 auto;
+  padding:clamp(26px,5vw,44px) 0 clamp(18px,3vw,26px);
+  display:flex;align-items:flex-end;justify-content:space-between;gap:20px;flex-wrap:wrap;
+  border-bottom:1px solid var(--borde);
+}
+.marca h1{
+  font-family:var(--display);
+  font-weight:600;
+  font-size:clamp(2rem,6vw,3.1rem);
+  letter-spacing:.22em;
+  margin:0;
+  color:var(--oro-claro);
+  text-shadow:0 0 28px rgba(217,180,91,.22);
+}
+.subtitulo{
+  margin:.35rem 0 0;
+  font-size:.82rem;letter-spacing:.16em;text-transform:uppercase;
+  color:var(--tenue);font-family:var(--utilitaria);
+}
+.sep{color:var(--amatista);}
+
+.augurio{
+  display:flex;flex-direction:column;align-items:flex-end;gap:4px;
+  font-family:var(--utilitaria);font-size:.72rem;
+}
+.augurio-dia{color:var(--tenue);letter-spacing:.1em;text-transform:uppercase;}
+.augurio-sello{
+  padding:4px 12px;border-radius:99px;letter-spacing:.14em;text-transform:uppercase;
+  border:1px solid var(--nilo);color:var(--nilo);background:rgba(63,167,154,.08);
+}
+.augurio-sello.nefasto{
+  border-color:var(--granate);color:var(--granate);background:rgba(192,90,118,.10);
+}
+.boton-instalar{
+  margin-bottom:2px;padding:5px 14px;border-radius:99px;cursor:pointer;
+  background:transparent;border:1px solid var(--amatista);color:var(--amatista);
+  font-family:var(--utilitaria);font-size:.66rem;letter-spacing:.14em;text-transform:uppercase;
+  transition:background .2s ease,color .2s ease;
+}
+.boton-instalar:hover{background:var(--amatista);color:var(--abismo);}
+.boton-instalar:focus-visible{outline:2px solid var(--oro);outline-offset:2px;}
+
+/* ---------------- Rejilla del tablero ---------------- */
+.tablero{
+  max-width:1180px;margin:0 auto;
+  padding-top:clamp(20px,3vw,30px);
+  display:grid;gap:clamp(14px,2vw,20px);
+  grid-template-columns:1fr;
+}
+@media (min-width:900px){
+  .tablero{
+    grid-template-columns:minmax(300px,.85fr) 1.15fr;
+    grid-template-areas:
+      "pregunta trazado"
+      "pregunta respuesta"
+      "registro cabala";
+    align-items:start;
+  }
+  .panel-pregunta{grid-area:pregunta;}
+  .panel-trazado{grid-area:trazado;}
+  .panel-respuesta{grid-area:respuesta;}
+  .panel-cabala{grid-area:cabala;}
+  .panel-registro{grid-area:registro;}
+}
+
+/* ---------------- Panel ---------------- */
+.panel{
+  background:linear-gradient(168deg, var(--velo) 0%, var(--velo-2) 100%);
+  border:1px solid var(--borde);
+  border-radius:var(--r);
+  padding:clamp(16px,2.4vw,24px);
+  position:relative;
+}
+.panel::before{
+  content:"";position:absolute;inset:0;border-radius:var(--r);pointer-events:none;
+  box-shadow:inset 0 1px 0 rgba(243,223,168,.07);
+}
+
+.panel-cab{
+  display:flex;align-items:center;gap:12px;margin-bottom:16px;flex-wrap:wrap;
+}
+.panel-cab h2{
+  font-family:var(--display);font-weight:400;font-size:1.05rem;
+  letter-spacing:.16em;text-transform:uppercase;margin:0;color:var(--nacar);
+}
+.paso{
+  font-family:var(--utilitaria);font-size:.7rem;font-weight:500;
+  width:26px;height:26px;flex:0 0 26px;
+  display:grid;place-items:center;border-radius:50%;
+  border:1px solid var(--oro-tenue);color:var(--oro);
+  background:rgba(217,180,91,.07);
+}
+.paso-mudo{border-color:var(--amatista-tenue);color:var(--amatista);background:rgba(122,92,196,.08);}
+.panel-nota{
+  margin-left:auto;font-family:var(--utilitaria);font-size:.66rem;
+  color:var(--tenue);letter-spacing:.06em;
+}
+
+/* ---------------- Las preguntas ---------------- */
+.preguntas{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:2px;}
+.grupo-rotulo{
+  font-family:var(--utilitaria);font-size:.62rem;letter-spacing:.2em;text-transform:uppercase;
+  color:var(--amatista);margin:14px 0 5px;padding-left:2px;
+}
+.grupo-rotulo:first-child{margin-top:0;}
+
+.pregunta{
+  display:flex;align-items:baseline;gap:11px;width:100%;text-align:left;
+  background:none;border:1px solid transparent;border-radius:var(--r-s);
+  color:var(--nacar);font-family:var(--cuerpo);font-size:.94rem;font-weight:300;
+  padding:8px 10px;cursor:pointer;
+  transition:background .18s ease, border-color .18s ease, transform .18s ease;
+}
+.pregunta:hover{background:rgba(122,92,196,.12);}
+.pregunta:focus-visible{outline:2px solid var(--oro);outline-offset:2px;}
+.pregunta .num{
+  font-family:var(--utilitaria);font-size:.7rem;color:var(--tenue);
+  flex:0 0 auto;min-width:16px;
+}
+.pregunta[aria-selected="true"]{
+  background:rgba(217,180,91,.10);
+  border-color:var(--oro-tenue);
+}
+.pregunta[aria-selected="true"] .num{color:var(--oro);}
+.pregunta[aria-selected="true"] .txt{color:var(--oro-claro);}
+.pregunta.repetida .txt::after{
+  content:" · ya consultada hoy";
+  font-family:var(--utilitaria);font-size:.6rem;color:var(--granate);letter-spacing:.05em;
+}
+
+/* ---------------- El trazado ---------------- */
+.lienzo-envoltura{position:relative;}
+
+.lienzo{
+  width:100%;height:auto;display:block;
+  background:rgba(11,7,24,.5);
+  border:1px solid var(--borde);border-radius:var(--r-s);
+  touch-action:manipulation;
+}
+
+/* La zona de toque cubre el lienzo entero: un tap detiene la fila */
+.lienzo-tap{
+  position:absolute;inset:0;
+  background:none;border:0;border-radius:var(--r-s);
+  cursor:pointer;color:var(--tenue);
+  font-family:var(--utilitaria);font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;
+  display:grid;place-items:end center;padding-bottom:10px;
+  transition:color .2s ease;
+}
+.lienzo-tap:disabled{cursor:default;}
+.lienzo-tap:not(:disabled):hover{color:var(--oro);}
+.lienzo-tap:focus-visible{outline:2px solid var(--oro);outline-offset:2px;}
+.lienzo-tap.activo{color:var(--oro-claro);animation:latir 1.4s ease-in-out infinite;}
+@keyframes latir{50%{opacity:.45;}}
+
+.lecturas{
+  list-style:none;margin:10px 0 0;padding:0;
+  display:grid;grid-template-columns:repeat(4,1fr);gap:8px;
+}
+.lectura{
+  border:1px solid var(--borde);border-radius:var(--r-s);
+  padding:8px 6px;text-align:center;
+  font-family:var(--utilitaria);font-size:.7rem;color:var(--tenue);
+  background:rgba(11,7,24,.35);
+  transition:border-color .25s ease, background .25s ease, transform .25s ease;
+}
+.lectura .fila-n{display:block;font-size:.58rem;letter-spacing:.16em;text-transform:uppercase;opacity:.7;}
+.lectura .cuenta{display:block;color:var(--nacar);font-size:.95rem;margin-top:3px;}
+.lectura .paridad{display:block;font-size:.6rem;margin-top:2px;}
+.lectura.fijada{
+  border-color:var(--oro-tenue);background:rgba(217,180,91,.07);
+  animation:fijar .45s ease;
+}
+.lectura.fijada .cuenta{color:var(--oro-claro);}
+.lectura.fijada .paridad{color:var(--oro);}
+.lectura.activa{border-color:var(--amatista);background:rgba(122,92,196,.12);}
+@keyframes fijar{
+  0%{transform:scale(1);}
+  40%{transform:scale(1.06);}
+  100%{transform:scale(1);}
+}
+
+/* ---------------- Botones ---------------- */
+.acciones{display:flex;gap:10px;margin-top:16px;flex-wrap:wrap;}
+.boton{
+  font-family:var(--utilitaria);font-size:.74rem;letter-spacing:.14em;text-transform:uppercase;
+  padding:12px 22px;border-radius:99px;cursor:pointer;
+  transition:background .2s ease, color .2s ease, border-color .2s ease, opacity .2s ease;
+}
+.boton:focus-visible{outline:2px solid var(--oro);outline-offset:3px;}
+.boton-primario{
+  background:var(--oro);border:1px solid var(--oro);color:var(--abismo);font-weight:500;
+}
+.boton-primario:not(:disabled):hover{background:var(--oro-claro);border-color:var(--oro-claro);}
+.boton-primario:disabled{opacity:.32;cursor:not-allowed;}
+.boton-fantasma{
+  background:transparent;border:1px solid var(--borde);color:var(--tenue);
+}
+.boton-fantasma:hover{border-color:var(--amatista);color:var(--nacar);}
+.boton-mini{
+  margin-left:auto;background:none;border:0;cursor:pointer;
+  font-family:var(--utilitaria);font-size:.62rem;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--tenue);text-decoration:underline;text-underline-offset:3px;
+}
+.boton-mini:hover{color:var(--granate);}
+
+/* ---------------- Sello: símbolo → letra ---------------- */
+.sello-fila{
+  display:flex;align-items:center;justify-content:center;gap:clamp(16px,4vw,34px);
+  margin-top:18px;padding:16px;
+  border:1px solid var(--oro-tenue);border-radius:var(--r-s);
+  background:radial-gradient(60% 100% at 50% 0%, rgba(217,180,91,.10), transparent 70%);
+  animation:emerger .6s ease;
+}
+.sello{display:flex;flex-direction:column;align-items:center;gap:8px;}
+.sello-rotulo{
+  font-family:var(--utilitaria);font-size:.6rem;letter-spacing:.2em;text-transform:uppercase;color:var(--tenue);
+}
+.sello-glifo{display:flex;flex-direction:column;gap:6px;}
+.sello-glifo .fila-puntos{display:flex;gap:6px;justify-content:center;height:9px;}
+.sello-glifo .punto{
+  width:9px;height:9px;border-radius:50%;background:var(--oro-claro);
+  box-shadow:0 0 10px rgba(243,223,168,.5);
+}
+.sello-letra{
+  font-family:var(--display);font-size:2.6rem;font-weight:600;line-height:1;
+  color:var(--oro-claro);text-shadow:0 0 24px rgba(217,180,91,.4);
+}
+.flecha{color:var(--amatista);font-size:1.3rem;}
+
+@keyframes emerger{
+  from{opacity:0;transform:translateY(10px);}
+  to{opacity:1;transform:none;}
+}
+
+/* ---------------- La respuesta ---------------- */
+.respuesta-vacia{
+  color:var(--tenue);font-style:italic;font-size:.95rem;
+  padding:18px 0 6px;line-height:1.8;
+}
+.respuesta{
+  margin:0;padding:0;animation:emerger .7s ease;
+}
+.respuesta-pregunta{
+  margin:0 0 12px;
+  font-family:var(--utilitaria);font-size:.7rem;letter-spacing:.1em;
+  color:var(--amatista);text-transform:uppercase;
+}
+.respuesta-texto{
+  margin:0;
+  font-family:var(--display);font-weight:400;
+  font-size:clamp(1.28rem,3.2vw,1.72rem);
+  line-height:1.45;color:var(--oro-claro);
+  text-wrap:balance;
+}
+.respuesta-pie{
+  margin-top:18px;padding-top:14px;border-top:1px solid var(--borde);
+  display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap;
+}
+.respuesta-original{
+  font-family:var(--cuerpo);font-style:italic;font-size:.84rem;color:var(--tenue);
+  flex:1 1 260px;
+}
+.respuesta-ref{
+  font-family:var(--utilitaria);font-size:.64rem;letter-spacing:.1em;
+  color:var(--oro-tenue);white-space:nowrap;
+}
+
+/* ---------------- La cábala ---------------- */
+details summary{list-style:none;cursor:pointer;}
+details summary::-webkit-details-marker{display:none;}
+.panel-cab-summary{margin-bottom:0;}
+details[open] .panel-cab-summary{margin-bottom:16px;}
+.panel-cab-summary::after{
+  content:"+";font-family:var(--utilitaria);color:var(--tenue);margin-left:10px;
+}
+details[open] .panel-cab-summary::after{content:"−";}
+
+.cabala-envoltura{overflow-x:auto;padding-bottom:6px;}
+.cabala{border-collapse:collapse;font-family:var(--utilitaria);font-size:.66rem;}
+.cabala th, .cabala td{
+  border:1px solid rgba(51,38,94,.7);
+  width:26px;height:24px;text-align:center;color:var(--tenue);
+  transition:background .2s ease, color .2s ease;
+}
+.cabala th.esq{width:30px;color:var(--amatista);}
+.cabala th.simbolo{height:38px;padding:3px 0;vertical-align:middle;}
+.cabala th.fila-q{
+  width:30px;color:var(--amatista);font-weight:400;
+  position:sticky;left:0;background:var(--velo-2);z-index:1;
+}
+.cabala td.marcada{
+  background:var(--oro);color:var(--abismo);font-weight:500;
+}
+.cabala tr.fila-viva th.fila-q, .cabala tr.fila-viva td{background:rgba(122,92,196,.14);color:var(--nacar);}
+.cabala tr.fila-viva td.marcada{background:var(--oro);color:var(--abismo);}
+.cabala th.col-viva{background:rgba(122,92,196,.14);}
+.glifo-col{display:block;margin:0 auto;}
+
+/* ---------------- Registro ---------------- */
+.registro{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px;}
+.registro li{
+  display:flex;align-items:baseline;gap:10px;
+  padding:9px 11px;border-radius:var(--r-s);
+  background:rgba(11,7,24,.35);border:1px solid var(--borde);
+  font-size:.86rem;
+}
+.registro .r-fecha{
+  font-family:var(--utilitaria);font-size:.62rem;color:var(--tenue);white-space:nowrap;
+}
+.registro .r-letra{
+  font-family:var(--display);font-size:.9rem;color:var(--oro);
+  border:1px solid var(--oro-tenue);border-radius:4px;
+  width:20px;height:20px;display:grid;place-items:center;flex:0 0 20px;
+}
+.registro .r-txt{color:var(--nacar);font-weight:300;}
+.registro-vacio{
+  color:var(--tenue);font-style:italic;font-size:.88rem;margin:6px 0 0;
+}
+
+/* ---------------- Pie ---------------- */
+.pie{
+  max-width:1180px;margin:clamp(30px,5vw,52px) auto 0;
+  padding-top:22px;border-top:1px solid var(--borde);
+  font-size:.78rem;color:var(--tenue);line-height:1.7;
+}
+.pie em{color:var(--nacar);font-style:italic;}
+.pie-aviso{
+  font-family:var(--utilitaria);font-size:.64rem;letter-spacing:.06em;
+  color:var(--amatista-tenue);margin-bottom:0;
+}
+
+/* ---------------- Aviso flotante ---------------- */
+.aviso{
+  position:fixed;left:50%;bottom:22px;transform:translateX(-50%);
+  max-width:min(90vw,460px);
+  background:var(--velo-2);border:1px solid var(--granate);
+  color:var(--nacar);border-radius:var(--r-s);
+  padding:12px 18px;font-size:.86rem;
+  box-shadow:0 12px 40px rgba(0,0,0,.5);
+  z-index:20;animation:emerger .3s ease;
+}
+.aviso button{
+  margin-left:12px;background:none;border:1px solid var(--granate);
+  color:var(--granate);border-radius:99px;padding:3px 12px;cursor:pointer;
+  font-family:var(--utilitaria);font-size:.62rem;text-transform:uppercase;letter-spacing:.1em;
+}
+.aviso button:hover{background:var(--granate);color:var(--abismo);}
+
+/* ---------------- Accesibilidad: movimiento reducido ---------------- */
+@media (prefers-reduced-motion: reduce){
+  *,*::before,*::after{
+    animation-duration:.01ms!important;animation-iteration-count:1!important;
+    transition-duration:.01ms!important;
+  }
+}
