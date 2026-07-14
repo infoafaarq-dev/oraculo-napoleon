@@ -4,6 +4,7 @@
 
 const path = require('path');
 const D = require(path.join(__dirname, 'oraculum-data.js'));
+const L = require(path.join(__dirname, 'libro-1855.js'));
 
 let fails = 0, warns = 0;
 const ok = (cond, msg) => {
@@ -131,6 +132,50 @@ ok(Object.keys(D.DIAS_NEFASTOS).length === 12, 'los 12 meses');
 ok(totalDias.every(d => d >= 1 && d <= 31), 'todos los días en rango 1..31');
 ok(D.esDiaNefasto(new Date(2026, 0, 6)) === true, '6 de enero es nefasto');
 ok(D.esDiaNefasto(new Date(2026, 6, 13)) === false, '13 de julio no es nefasto');
+
+
+console.log('\n=== INV-11  Capa doctrinal (libro de 1855) ===');
+ok(Object.keys(L.GENEROS).length === 5, 'los cinco géneros del traductor');
+ok(['positiva','imperativa','presuntiva','monitoria','condicional']
+     .every(g => L.GENEROS[g] && L.GENEROS[g].ejemplo && L.GENEROS[g].ejemplo.texto),
+   'cada género trae su definición y el ejemplo del libro');
+ok(L.PREGUNTAS_1855.length === 10, '10 preguntas de 1855 recuperadas del prólogo');
+ok(L.DOCTRINA.reglas.length === 3, 'las 3 reglas de consulta');
+ok(Object.keys(L.AYUDAS).length >= 5, 'ayuda contextual para cada panel');
+
+console.log('\n=== INV-12  Clasificador de géneros ===');
+let sinClase = 0, conteo = {};
+for (const letra of D.LETRAS) for (const r of D.RESPUESTAS[letra]) {
+  const g = L.clasificar(r.es);
+  if (!L.GENEROS[g]) sinClase++;
+  conteo[g] = (conteo[g] || 0) + 1;
+}
+const total = Object.values(conteo).reduce((a, b) => a + b, 0);
+ok(total === 256, 'las 256 respuestas quedan clasificadas');
+ok(sinClase === 0, 'ninguna cae fuera de los cinco géneros');
+ok(Object.keys(conteo).length === 5, 'los cinco géneros aparecen en el corpus');
+ok(L.clasificar('Si obras con rectitud, ciertamente prosperarás.') === 'condicional',
+   'condicional: el desenlace depende de la conducta');
+ok(L.clasificar('Guárdate de los amigos falsos y engañosos.') === 'imperativa',
+   'imperativa: el Oráculo manda');
+ok(L.clasificar('Una gran fortuna te está destinada: espera con paciencia.') === 'presuntiva',
+   'presuntiva: afirma y luego aconseja');
+ok(L.clasificar('Anuncia que tienes enemigos que intentarán arruinarte.') === 'monitoria',
+   'monitoria: advierte sin mandar');
+ok(L.clasificar('Lo que deseas lo obtendrás en breve.') === 'positiva',
+   'positiva: pura afirmación');
+ok(L.clasificar('Sé muy cauto en lo que hagas este día, no sea que te alcance la desgracia.') === 'imperativa',
+   'los imperativos acentuados se detectan (bug de \\b en JS)');
+ok(L.clasificar('Tendrá una hija, que requerirá cuidados.') === 'positiva',
+   '"cuidados" no se confunde con una advertencia');
+let mandatosOcultos = 0;
+for (const letra of D.LETRAS) for (const r of D.RESPUESTAS[letra]) {
+  if (L.clasificar(r.es) === 'positiva' &&
+      /^(sé |guárdate|declina|evita|prepárate|cambia|considera|apresura|conténtate)/i.test(r.es))
+    mandatosOcultos++;
+}
+ok(mandatosOcultos === 0, 'ninguna "positiva" esconde un mandato (encontrados: ' + mandatosOcultos + ')');
+console.log('      reparto:', JSON.stringify(conteo));
 
 console.log('\n----------------------------------------');
 console.log(fails === 0 ? 'status: success, total_errors: 0' : 'status: FAILED, total_errors: ' + fails);

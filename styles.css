@@ -419,3 +419,136 @@ details[open] .panel-cab-summary::after{content:"−";}
     transition-duration:.01ms!important;
   }
 }
+
+/* ============================================================
+   AYUDA CONTEXTUAL EN CADA PANEL
+   ============================================================ */
+.ayuda-btn{
+  margin-left:auto;
+  width:24px;height:24px;flex:0 0 24px;
+  display:grid;place-items:center;border-radius:50%;cursor:pointer;
+  background:transparent;border:1px solid var(--amatista-tenue);
+  color:var(--amatista);font-family:var(--utilitaria);font-size:.72rem;
+  transition:background .2s ease,color .2s ease,border-color .2s ease;
+}
+.ayuda-btn:hover{background:var(--amatista);color:var(--abismo);border-color:var(--amatista);}
+.ayuda-btn:focus-visible{outline:2px solid var(--oro);outline-offset:2px;}
+.ayuda-btn[aria-expanded="true"]{background:var(--amatista);color:var(--abismo);border-color:var(--amatista);}
+.panel-cab .ayuda-btn + .boton-mini{margin-left:10px;}
+
+.ayuda{
+  margin:0 0 16px;padding:14px 16px;
+  border-left:2px solid var(--amatista);border-radius:0 var(--r-s) var(--r-s) 0;
+  background:rgba(122,92,196,.09);
+  animation:emerger .3s ease;
+}
+.ayuda h3{
+  margin:0 0 10px;
+  font-family:var(--utilitaria);font-size:.66rem;font-weight:500;
+  letter-spacing:.16em;text-transform:uppercase;color:var(--amatista);
+}
+.ayuda ol{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:7px;}
+.ayuda li{font-size:.88rem;color:var(--nacar);line-height:1.6;}
+.ayuda li::marker{color:var(--oro);font-family:var(--utilitaria);font-size:.75rem;}
+.ayuda strong{color:var(--oro-claro);font-weight:600;}
+.ayuda em{color:var(--oro-claro);font-style:italic;}
+.ayuda-cita{
+  margin:12px 0 0;padding-top:11px;border-top:1px solid var(--borde);
+  font-style:italic;font-size:.82rem;color:var(--tenue);line-height:1.6;
+}
+.ayuda-cita::before{content:"« ";}
+.ayuda-cita::after{content:" »  — del libro, 1855";font-style:normal;font-family:var(--utilitaria);font-size:.62rem;letter-spacing:.06em;color:var(--amatista-tenue);}
+
+/* ============================================================
+   INTERPRETACIÓN — los cinco géneros
+   ============================================================ */
+.interpretacion{
+  margin-top:20px;padding:18px;
+  border:1px solid var(--borde);border-radius:var(--r-s);
+  background:rgba(11,7,24,.4);
+  animation:emerger .8s ease;
+}
+.interp-cab{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:12px;}
+.genero{
+  font-family:var(--utilitaria);font-size:.68rem;font-weight:500;
+  letter-spacing:.16em;text-transform:uppercase;
+  padding:5px 13px;border-radius:99px;
+  border:1px solid currentColor;
+}
+.genero[data-color="nilo"]{color:var(--nilo);background:rgba(63,167,154,.10);}
+.genero[data-color="granate"]{color:var(--granate);background:rgba(192,90,118,.10);}
+.genero[data-color="oro"]{color:var(--oro);background:rgba(217,180,91,.10);}
+.genero[data-color="amatista"]{color:var(--amatista);background:rgba(122,92,196,.12);}
+.genero[data-color="nacar"]{color:var(--nacar);background:rgba(234,228,247,.08);}
+.interp-rotulo{
+  font-family:var(--utilitaria);font-size:.62rem;letter-spacing:.08em;
+  text-transform:uppercase;color:var(--tenue);
+}
+.interp-rotulo em{font-style:normal;color:var(--amatista-tenue);text-transform:none;letter-spacing:0;}
+
+.interp-def{margin:0 0 10px;font-size:.95rem;color:var(--nacar);line-height:1.65;}
+.interp-exige{margin:0 0 14px;font-size:.92rem;color:var(--tenue);}
+.interp-exige span{
+  font-family:var(--utilitaria);font-size:.62rem;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--oro);margin-right:6px;
+}
+.interp-exige em{color:var(--oro-claro);font-style:italic;}
+
+.interp-mas{margin-bottom:12px;}
+.interp-mas summary{
+  cursor:pointer;font-family:var(--utilitaria);font-size:.66rem;
+  letter-spacing:.08em;color:var(--amatista);
+  text-decoration:underline;text-underline-offset:3px;
+}
+.interp-mas summary:hover{color:var(--nacar);}
+.interp-ejemplo{
+  margin-top:10px;padding:12px 14px;
+  border-left:2px solid var(--oro-tenue);background:rgba(217,180,91,.05);
+  border-radius:0 var(--r-s) var(--r-s) 0;
+}
+.ej-preg{margin:0 0 4px;font-family:var(--utilitaria);font-size:.66rem;color:var(--tenue);}
+.ej-jero{margin:0 0 8px;font-family:var(--utilitaria);font-size:.62rem;letter-spacing:.1em;text-transform:uppercase;color:var(--amatista);}
+.ej-txt{margin:0;font-style:italic;font-size:.9rem;color:var(--oro-claro);line-height:1.6;}
+
+.interp-doctrina{
+  margin:0 0 10px;padding-top:12px;border-top:1px solid var(--borde);
+  font-size:.84rem;font-style:italic;color:var(--tenue);line-height:1.65;
+}
+.interp-nota{
+  margin:0;font-family:var(--utilitaria);font-size:.6rem;line-height:1.6;
+  color:var(--amatista-tenue);letter-spacing:.03em;
+}
+
+/* ============================================================
+   PANEL EL LIBRO
+   ============================================================ */
+.libro-cuerpo{display:flex;flex-direction:column;gap:18px;}
+.libro-bloque h3{
+  margin:0 0 8px;font-family:var(--utilitaria);font-size:.64rem;font-weight:500;
+  letter-spacing:.16em;text-transform:uppercase;color:var(--oro);
+}
+.libro-bloque p{margin:0;font-size:.9rem;color:var(--nacar);line-height:1.7;}
+.libro-bloque.alerta{
+  padding:13px 15px;border-left:2px solid var(--granate);
+  background:rgba(192,90,118,.07);border-radius:0 var(--r-s) var(--r-s) 0;
+}
+.libro-bloque.alerta h3{color:var(--granate);}
+.libro-bloque.alerta p{color:var(--tenue);}
+.libro-reglas{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:6px;}
+.libro-reglas li{font-size:.88rem;color:var(--nacar);line-height:1.6;}
+.libro-reglas li::marker{color:var(--amatista);}
+.preguntas-1855{
+  list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:5px;
+}
+.preguntas-1855 li{
+  display:flex;gap:10px;align-items:baseline;
+  font-size:.86rem;color:var(--tenue);font-style:italic;
+}
+.preguntas-1855 .qn{
+  font-family:var(--utilitaria);font-size:.66rem;font-style:normal;
+  color:var(--oro-tenue);flex:0 0 22px;
+}
+
+/* Botón del sello de día, ahora clicable */
+.augurio-sello{cursor:pointer;font-family:var(--utilitaria);font-size:.72rem;}
+.augurio-sello:focus-visible{outline:2px solid var(--oro);outline-offset:2px;}

@@ -81,6 +81,10 @@
   const elRegistroVacio = $('registroVacio');
   const btnBorrarRegistro = $('btnBorrarRegistro');
   const elAviso = $('aviso');
+  const elCabalaEnvoltura = $('cabalaEnvoltura');
+  const btnVerCabala = $('btnVerCabala');
+  const elInterpretacion = $('interpretacion');
+  const elLibroCuerpo = $('libroCuerpo');
 
   const ctx = elLienzo.getContext('2d');
   let W = 0, H = 0;
@@ -96,9 +100,8 @@
     const nefasto = esDiaNefasto(hoy);
     sello.textContent = nefasto ? 'Día nefasto' : 'Día propicio';
     sello.classList.toggle('nefasto', nefasto);
-    sello.title = nefasto
-      ? 'El libro desaconseja consultar en esta fecha.'
-      : 'Fecha no listada entre los días nefastos del libro.';
+    sello.title = 'Toca para saber qué dice el libro sobre esto';
+    sello.onclick = () => mostrarAviso(DOCTRINA.diasNefastos, 'Entendido', ocultarAviso);
   }
 
   /* ============================================================
@@ -148,9 +151,8 @@
   }
 
   function marcarRepetidasDeHoy() {
-    const hechas = preguntasDeHoy();
     document.querySelectorAll('.pregunta').forEach(b => {
-      b.classList.toggle('repetida', hechas.includes(Number(b.dataset.q)));
+      b.classList.toggle('repetida', revisarReglas(Number(b.dataset.q)) !== null);
     });
   }
 
@@ -304,14 +306,16 @@
   function iniciar() {
     if (estado.pregunta === null || estado.dibujando) return;
 
-    /* Regla del libro: no repetir la misma pregunta el mismo día */
-    if (!estado.confirmadaRepeticion && preguntasDeHoy().includes(estado.pregunta)) {
-      mostrarAviso(
-        'El libro prohíbe hacer la misma pregunta dos veces en un día.',
-        'Consultar igual',
-        () => { estado.confirmadaRepeticion = true; ocultarAviso(); iniciar(); }
-      );
-      return;
+    /* Reglas del libro de 1855:
+       "nadie debe hacer más de una pregunta en el mismo día, ni debe repetirse
+        la misma pregunta por la misma persona a lo menos en un mes." */
+    if (!estado.confirmadaRepeticion) {
+      const infraccion = revisarReglas(estado.pregunta);
+      if (infraccion) {
+        mostrarAviso(infraccion, 'Consultar igual',
+          () => { estado.confirmadaRepeticion = true; ocultarAviso(); iniciar(); });
+        return;
+      }
     }
 
     reiniciar(true);
@@ -377,6 +381,9 @@
     elRespuestaVacia.hidden = true;
     elRespuesta.hidden = false;
 
+    /* Interpretación: el género de la respuesta según el traductor de 1855 */
+    pintarInterpretacion(r.respuesta.es);
+
     estado.resuelto = true;
     btnReiniciar.hidden = false;
     pintarCabala(estado.pregunta, s, r.letra);
@@ -395,6 +402,7 @@
     dibujar();
     elSelloFila.hidden = true;
     elRespuesta.hidden = true;
+    elInterpretacion.hidden = true;
     elRespuestaVacia.hidden = false;
     elTap.disabled = true;
     elTapTexto.textContent = '';
@@ -443,12 +451,113 @@
     elCabala.innerHTML = html;
 
     if (letraViva) {
+      elCabalaEnvoltura.hidden = false;
+      btnVerCabala.textContent = 'Ocultar tabla';
       const celda = elCabala.querySelector('td.marcada');
-      if (celda && !document.getElementById('detallesCabala').open) {
-        document.getElementById('detallesCabala').open = true;
-      }
       if (celda) celda.scrollIntoView({ block: 'nearest', inline: 'center', behavior: 'smooth' });
     }
+  }
+
+
+  /* ============================================================
+     INTERPRETACIÓN — los cinco géneros del traductor de 1855
+     ============================================================ */
+  function pintarInterpretacion(textoEs) {
+    const clave = clasificar(textoEs);
+    const g = GENEROS[clave];
+
+    const etiqueta = $('generoEtiqueta');
+    etiqueta.textContent = g.nombre;
+    etiqueta.dataset.color = g.color;
+
+    $('generoDefinicion').textContent = g.definicion;
+    $('generoExige').textContent = g.exige;
+    $('ejemploPregunta').textContent = 'Pregunta ' + g.ejemplo.pregunta;
+    $('ejemploJeroglifico').textContent = 'Jeroglífico: ' + g.ejemplo.jeroglifico;
+    $('ejemploTexto').textContent = '«' + g.ejemplo.texto + '»';
+    $('interpDoctrina').textContent = DOCTRINA.aceptacion;
+
+    elInterpretacion.hidden = false;
+  }
+
+  /* ============================================================
+     AYUDA CONTEXTUAL EN CADA PANEL
+     ============================================================ */
+  function pintarAyudas() {
+    document.querySelectorAll('.ayuda-btn').forEach(btn => {
+      const clave = btn.dataset.ayuda;
+      const a = AYUDAS[clave];
+      const caja = $('ayuda-' + clave);
+      if (!a || !caja) return;
+
+      let html = '<h3>' + a.titulo + '</h3>';
+      if (a.pasos.length) {
+        html += '<ol>' + a.pasos.map(p => '<li>' + p + '</li>').join('') + '</ol>';
+      }
+      if (a.cita) html += '<p class="ayuda-cita">' + a.cita + '</p>';
+      caja.innerHTML = html;
+
+      btn.addEventListener('click', () => {
+        const abierta = btn.getAttribute('aria-expanded') === 'true';
+        btn.setAttribute('aria-expanded', String(!abierta));
+        caja.hidden = abierta;
+      });
+    });
+  }
+
+  /* ============================================================
+     EL LIBRO — procedencia y método original
+     ============================================================ */
+  function pintarLibro() {
+    elLibroCuerpo.innerHTML =
+      bloque('El hallazgo', HISTORIA.relato) +
+      bloqueAlerta('Pero conviene saber', HISTORIA.advertencia) +
+      bloque('Esta edición', HISTORIA.edicion) +
+      bloque('El método original (1855)', HISTORIA.metodo1855) +
+      '<div class="libro-bloque"><h3>Las reglas de consulta</h3><ul class="libro-reglas">' +
+        DOCTRINA.reglas.map(r => '<li>' + r + '</li>').join('') +
+      '</ul></div>' +
+      bloque('El rito, sin embelecos', DOCTRINA.ritual) +
+      bloque('Sobre los días nefastos', DOCTRINA.diasNefastos) +
+      '<div class="libro-bloque"><h3>Preguntas de 1855 que sí se recuperan</h3>' +
+        '<p style="margin-bottom:10px">La lámina con las 32 preguntas no viene en el escaneo. ' +
+        'Estas diez las cita el traductor en el prólogo, con su número de tabla:</p>' +
+        '<ul class="preguntas-1855">' +
+        PREGUNTAS_1855.map(p =>
+          '<li><span class="qn">' + String(p.n).padStart(2, '0') + '</span>' + p.texto + '</li>'
+        ).join('') +
+      '</ul></div>';
+  }
+  function bloque(t, p) {
+    return '<div class="libro-bloque"><h3>' + t + '</h3><p>' + p + '</p></div>';
+  }
+  function bloqueAlerta(t, p) {
+    return '<div class="libro-bloque alerta"><h3>' + t + '</h3><p>' + p + '</p></div>';
+  }
+
+  /* ============================================================
+     REGLAS DE CONSULTA (edición de 1855)
+     ============================================================ */
+  const DIA_MS = 24 * 60 * 60 * 1000;
+
+  function revisarReglas(q) {
+    const reg = leerRegistro();
+    const ahora = Date.now();
+    const hoy = new Date().toDateString();
+
+    /* "ni debe repetirse la misma pregunta por la misma persona a lo menos en un mes" */
+    const mismaEnUnMes = reg.find(x => x.q === q && (ahora - x.ts) < 30 * DIA_MS);
+    if (mismaEnUnMes) {
+      const dias = Math.ceil((30 * DIA_MS - (ahora - mismaEnUnMes.ts)) / DIA_MS);
+      return 'El libro pide no repetir la misma pregunta antes de un mes. Faltan ' + dias +
+             (dias === 1 ? ' día.' : ' días.');
+    }
+
+    /* "nadie debe hacer más de una pregunta en el mismo día" */
+    if (reg.some(x => new Date(x.ts).toDateString() === hoy)) {
+      return 'El libro pide no hacer más de una pregunta en el mismo día.';
+    }
+    return null;
   }
 
   /* ============================================================
@@ -518,11 +627,19 @@
      ============================================================ */
   function inicio() {
     pintarAugurio();
+    pintarAyudas();
+    pintarLibro();
     pintarPreguntas();
     pintarLecturas();
     pintarCabala();
     pintarRegistro();
     dimensionar();
+
+    btnVerCabala.addEventListener('click', () => {
+      const oculta = elCabalaEnvoltura.hidden;
+      elCabalaEnvoltura.hidden = !oculta;
+      btnVerCabala.textContent = oculta ? 'Ocultar tabla' : 'Ver tabla';
+    });
 
     btnIniciar.addEventListener('click', iniciar);
     btnReiniciar.addEventListener('click', () => reiniciar(false));

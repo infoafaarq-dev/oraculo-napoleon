@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Oraculum — El Libro de los Destinos</title>
-<meta name="description" content="El Oráculo de Napoleón. Traza las rayas, elige tu pregunta, recibe la respuesta del Libro de los Destinos.">
+<meta name="description" content="El Oráculo de Napoleón. Traza las rayas, elige tu pregunta y recibe la respuesta del Libro de los Destinos, con su interpretación según el libro de 1855.">
 <meta name="theme-color" content="#120C24">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -24,38 +24,37 @@
 <header class="cabecera">
   <div class="marca">
     <h1>Oraculum</h1>
-    <p class="subtitulo">El Libro de los Destinos <span class="sep">·</span> ed. 1884</p>
+    <p class="subtitulo">El Libro de los Destinos <span class="sep">·</span> Bogotá, 1855</p>
   </div>
-  <div class="augurio" id="augurio">
+  <div class="augurio">
     <button class="boton-instalar" id="btnInstalar" type="button" hidden>Instalar</button>
     <span class="augurio-dia" id="augurioFecha">—</span>
-    <span class="augurio-sello" id="augurioSello">—</span>
+    <button class="augurio-sello" id="augurioSello" type="button">—</button>
   </div>
 </header>
 
 <main class="tablero">
 
-  <!-- I. LA PREGUNTA -->
   <section class="panel panel-pregunta" aria-labelledby="tit-pregunta">
     <div class="panel-cab">
       <span class="paso">I</span>
       <h2 id="tit-pregunta">La pregunta</h2>
-      <span class="panel-nota">Solo una. Nunca dos veces el mismo día.</span>
+      <button class="ayuda-btn" type="button" data-ayuda="pregunta" aria-expanded="false" aria-label="Cómo se usa este panel">?</button>
     </div>
+    <div class="ayuda" id="ayuda-pregunta" hidden></div>
     <ul class="preguntas" id="preguntas" role="listbox" aria-label="Las dieciséis preguntas del Oráculo"></ul>
   </section>
 
-  <!-- II. EL TRAZADO -->
   <section class="panel panel-trazado" aria-labelledby="tit-trazado">
     <div class="panel-cab">
       <span class="paso">II</span>
       <h2 id="tit-trazado">El trazado</h2>
-      <span class="panel-nota">Cuatro filas de rayas. Un toque detiene cada una.</span>
+      <button class="ayuda-btn" type="button" data-ayuda="trazado" aria-expanded="false" aria-label="Cómo se usa este panel">?</button>
     </div>
+    <div class="ayuda" id="ayuda-trazado" hidden></div>
 
     <div class="lienzo-envoltura">
-      <canvas id="lienzo" class="lienzo" width="900" height="360"
-              aria-label="Lienzo donde se trazan las cuatro filas de rayas"></canvas>
+      <canvas id="lienzo" class="lienzo" width="900" height="360" aria-label="Lienzo donde se trazan las cuatro filas de rayas"></canvas>
       <button class="lienzo-tap" id="lienzoTap" type="button" aria-live="polite">
         <span id="lienzoTapTexto"></span>
       </button>
@@ -80,15 +79,18 @@
     </div>
   </section>
 
-  <!-- III. LA RESPUESTA -->
   <section class="panel panel-respuesta" id="panelRespuesta" aria-labelledby="tit-respuesta" aria-live="polite">
     <div class="panel-cab">
       <span class="paso">III</span>
       <h2 id="tit-respuesta">La respuesta</h2>
+      <button class="ayuda-btn" type="button" data-ayuda="respuesta" aria-expanded="false" aria-label="Cómo se usa este panel">?</button>
     </div>
+    <div class="ayuda" id="ayuda-respuesta" hidden></div>
+
     <div class="respuesta-vacia" id="respuestaVacia">
       <p>Elige tu pregunta y traza las rayas.<br>El Oráculo responde una sola vez.</p>
     </div>
+
     <blockquote class="respuesta" id="respuesta" hidden>
       <p class="respuesta-pregunta" id="respuestaPregunta"></p>
       <p class="respuesta-texto" id="respuestaTexto"></p>
@@ -97,42 +99,73 @@
         <span class="respuesta-ref" id="respuestaRef"></span>
       </footer>
     </blockquote>
-  </section>
 
-  <!-- LA CÁBALA -->
-  <section class="panel panel-cabala" aria-labelledby="tit-cabala">
-    <details id="detallesCabala">
-      <summary class="panel-cab panel-cab-summary">
-        <span class="paso paso-mudo">✦</span>
-        <h2 id="tit-cabala">La cábala</h2>
-        <span class="panel-nota">Cómo el símbolo se vuelve letra</span>
-      </summary>
-      <div class="cabala-envoltura">
-        <table class="cabala" id="cabala">
-          <caption class="visually-hidden">Tabla cabalística: preguntas por símbolos</caption>
-        </table>
+    <div class="interpretacion" id="interpretacion" hidden>
+      <div class="interp-cab">
+        <span class="genero" id="generoEtiqueta">—</span>
+        <span class="interp-rotulo">Género de la respuesta <em>(el traductor de 1855 distingue cinco)</em></span>
       </div>
-    </details>
+      <p class="interp-def" id="generoDefinicion"></p>
+      <p class="interp-exige"><span>Qué te pide:</span> <em id="generoExige"></em></p>
+      <details class="interp-mas">
+        <summary>El ejemplo que el libro da para este género</summary>
+        <div class="interp-ejemplo">
+          <p class="ej-preg" id="ejemploPregunta"></p>
+          <p class="ej-jero" id="ejemploJeroglifico"></p>
+          <p class="ej-txt" id="ejemploTexto"></p>
+        </div>
+      </details>
+      <p class="interp-doctrina" id="interpDoctrina"></p>
+      <p class="interp-nota">Los cinco géneros son del libro. El reparto de cada respuesta a su género lo hace esta app con reglas gramaticales explícitas.</p>
+    </div>
   </section>
 
-  <!-- REGISTRO -->
+  <section class="panel panel-cabala" aria-labelledby="tit-cabala">
+    <div class="panel-cab">
+      <span class="paso paso-mudo">✦</span>
+      <h2 id="tit-cabala">La cábala</h2>
+      <button class="ayuda-btn" type="button" data-ayuda="cabala" aria-expanded="false" aria-label="Cómo se usa este panel">?</button>
+      <button class="boton-mini" id="btnVerCabala" type="button">Ver tabla</button>
+    </div>
+    <div class="ayuda" id="ayuda-cabala" hidden></div>
+    <div class="cabala-envoltura" id="cabalaEnvoltura" hidden>
+      <table class="cabala" id="cabala">
+        <caption class="visually-hidden">Tabla cabalística: preguntas por símbolos</caption>
+      </table>
+    </div>
+  </section>
+
   <section class="panel panel-registro" aria-labelledby="tit-registro">
     <div class="panel-cab">
       <span class="paso paso-mudo">✦</span>
       <h2 id="tit-registro">Registro</h2>
+      <button class="ayuda-btn" type="button" data-ayuda="registro" aria-expanded="false" aria-label="Cómo se usa este panel">?</button>
       <button class="boton-mini" id="btnBorrarRegistro" type="button" hidden>Borrar</button>
     </div>
+    <div class="ayuda" id="ayuda-registro" hidden></div>
     <ul class="registro" id="registro"></ul>
     <p class="registro-vacio" id="registroVacio">Aún no has consultado al Oráculo.</p>
+  </section>
+
+  <section class="panel panel-libro" aria-labelledby="tit-libro">
+    <details id="detallesLibro">
+      <summary class="panel-cab panel-cab-summary">
+        <span class="paso paso-mudo">✦</span>
+        <h2 id="tit-libro">El libro</h2>
+        <span class="panel-nota">Procedencia, método original y lo que falta</span>
+      </summary>
+      <div class="libro-cuerpo" id="libroCuerpo"></div>
+    </details>
   </section>
 
 </main>
 
 <footer class="pie">
   <p>
-    Corpus íntegro de <em>Napoleon's Oraculum and Dream Book</em> (Frank Tousey, Nueva York, 1884),
-    obra en dominio público: 16 preguntas, 16 símbolos, 256 respuestas. Traducción propia.
-    Ninguna respuesta fue inventada.
+    Motor y 256 respuestas: <em>Napoleon's Oraculum and Dream Book</em> (Frank Tousey, Nueva York, 1884).
+    Doctrina, método original, historia y los cinco géneros de respuesta:
+    <em>El Oráculo, ó sea el Libro de los Destinos</em> (Bogotá, 1855). Ambas en dominio público.
+    Traducción propia. Ninguna respuesta fue inventada.
   </p>
   <p class="pie-aviso">Objeto de curiosidad histórica. No es consejo médico, legal ni financiero.</p>
 </footer>
@@ -140,6 +173,7 @@
 <div class="aviso" id="aviso" role="status" hidden></div>
 
 <script src="oraculum-data.js"></script>
+<script src="libro-1855.js"></script>
 <script src="app.js"></script>
 </body>
 </html>

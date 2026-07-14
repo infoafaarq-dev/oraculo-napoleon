@@ -83,7 +83,7 @@ const RESPUESTAS = {
   ],
   B: [
     { es: 'La fortuna que te está destinada será codiciada por otros.', en: 'The luck that is ordained for you will be coveted by others.' },
-    { es: 'Sean cuales sean tus deseos, decline de ellos por ahora.', en: 'Whatever your desires are, for the present decline them.' },
+    { es: 'Sean cuales sean tus deseos, declina de ellos por ahora.', en: 'Whatever your desires are, for the present decline them.' },
     { es: 'Anuncia un favor o una bondad de parte de alguien.', en: 'Signifies a favor or kindness from some person.' },
     { es: 'Hay enemigos que quisieran defraudarte y hacerte infeliz.', en: 'There are enemies who would defraud and render you unhappy.' },
     { es: 'Con gran dificultad obtendrá otra vez el perdón o la libertad.', en: 'With great difficulty he will obtain pardon or release again.' },

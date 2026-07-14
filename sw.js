@@ -2,12 +2,13 @@
    Cachea el núcleo de la app en la instalación (funciona sin conexión)
    y guarda las tipografías de Google Fonts a medida que se usan. */
 
-const VERSION = 'oraculum-v1';
+const VERSION = 'oraculum-v2';
 const NUCLEO = [
   './',
   './index.html',
   './styles.css',
   './oraculum-data.js',
+  './libro-1855.js',
   './app.js',
   './manifest.webmanifest',
   './icons/icon-192.png',
