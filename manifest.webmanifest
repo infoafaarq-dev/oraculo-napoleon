@@ -1,19 +1,38 @@
 {
   "name": "Oraculum — El Libro de los Destinos",
   "short_name": "Oraculum",
-  "description": "El Oráculo de Napoleón. Traza las rayas, elige tu pregunta y recibe la respuesta del Libro de los Destinos.",
+  "description": "El Oráculo de Napoleón, edición de 1855: 32 preguntas, cinco hileras de rayas, 1024 respuestas y la Zodialojía.",
   "start_url": ".",
   "scope": ".",
   "display": "standalone",
   "orientation": "portrait-primary",
-  "background_color": "#120C24",
-  "theme_color": "#120C24",
+  "background_color": "#E8D8B0",
+  "theme_color": "#E8D8B0",
   "lang": "es-CL",
   "dir": "ltr",
-  "categories": ["entertainment", "lifestyle", "books"],
+  "categories": [
+    "entertainment",
+    "lifestyle",
+    "books"
+  ],
   "icons": [
-    { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
-    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
-    { "src": "icons/icon-512-maskable.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+    {
+      "src": "icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icons/icon-512-maskable.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
   ]
 }

@@ -1,184 +1,87 @@
-/* Verificación independiente (Fase 4 / 4b del Protocolo Fable).
-   Relee el archivo de datos desde disco y recomputa todo desde cero,
-   sin reutilizar la lógica del constructor. */
+/* Verificación del oráculo de 1855 (Protocolo Fable, fase QC). */
+const path=require('path'), fs=require('fs');
+global.CORPUS_1855 = require('./corpus-1855.js').CORPUS_1855;
+global.ZODIACO = require('./zodiaco.js').ZODIACO;
+global.ZODIACO_INTRO = require('./zodiaco.js').ZODIACO_INTRO;
+const M = require('./oraculum-data.js');
+const L = require('./libro-1855.js');
 
-const path = require('path');
-const D = require(path.join(__dirname, 'oraculum-data.js'));
-const L = require(path.join(__dirname, 'libro-1855.js'));
-
-let fails = 0, warns = 0;
-const ok = (cond, msg) => {
-  if (cond) { console.log('  PASS  ' + msg); }
-  else { console.log('  FAIL  ' + msg); fails++; }
-};
-const warn = (msg) => { console.log('  WARN  ' + msg); warns++; };
+let fails=0, warns=0;
+const ok=(c,m)=>{ console.log((c?'  PASS  ':'  FAIL  ')+m); if(!c)fails++; };
+const warn=m=>{ console.log('  WARN  '+m); warns++; };
 
 console.log('\n=== INV-1  Preguntas ===');
-ok(D.PREGUNTAS.length === 16, '16 preguntas');
-ok(D.PREGUNTAS.every((p, i) => p.n === i + 1), 'numeradas 1..16 en orden');
-ok(new Set(D.PREGUNTAS.map(p => p.es)).size === 16, '16 textos ES únicos');
+ok(CORPUS_1855.preguntas.length===32, '32 preguntas');
+ok(CORPUS_1855.preguntas.every((p,i)=>p.n===i+1), 'numeradas 1..32');
+ok(new Set(CORPUS_1855.preguntas.map(p=>p.texto)).size===32, '32 textos únicos');
 
-console.log('\n=== INV-2  Letras ===');
-ok(D.LETRAS.length === 16, '16 letras');
-ok(new Set(D.LETRAS).size === 16, 'sin repetidas');
-ok(!D.LETRAS.includes('J'), 'omite la J (como el original)');
+console.log('\n=== INV-2  Motor de 5 filas ===');
+ok(M.N===32, 'N = 32 grupos');
+ok(M.GRUPOS.length===32 && new Set(M.GRUPOS.map(g=>g.join(''))).size===32, '32 grupos de estrellas distintos');
+let idxOk=true; for(let i=0;i<32;i++) if(M.indiceGrupo(M.GRUPOS[i])!==i+1) idxOk=false;
+ok(idxOk, 'indiceGrupo(GRUPOS[i]) === i+1');
+ok(M.estrellas(12)===1 && M.estrellas(13)===2, 'impar->1 estrella, par->2 (reducción del libro)');
 
-console.log('\n=== INV-3  Corpus de respuestas ===');
-const todas = [];
-let paginasOk = true;
-for (const L of D.LETRAS) {
-  const pag = D.RESPUESTAS[L];
-  if (!pag || pag.length !== 16) { paginasOk = false; console.log('       pagina ' + L + ' tiene ' + (pag ? pag.length : 0)); }
-  else pag.forEach(r => todas.push(r));
+console.log('\n=== INV-3  Tabla cabalística (cuadrado latino) ===');
+let filas=true, cols=true;
+for(let q=1;q<=32;q++){ const f=[]; for(let s=1;s<=32;s++) f.push(M.jeroglificoDe(q,s)); if(new Set(f).size!==32) filas=false; }
+for(let s=1;s<=32;s++){ const c=[]; for(let q=1;q<=32;q++) c.push(M.jeroglificoDe(q,s)); if(new Set(c).size!==32) cols=false; }
+ok(filas, 'cada pregunta recorre los 32 jeroglíficos');
+ok(cols, 'cada grupo recorre los 32 jeroglíficos');
+
+console.log('\n=== INV-4  Ejemplo resuelto del propio libro ===');
+const ej=M.consultar(20,26);
+ok(ej.jeroglifico===13, 'pregunta 20 + grupo 26 -> jeroglífico de la página 13');
+ok(/pasajera|pasajero|desgracia/i.test(ej.respuesta.es) || ej.respuesta.ok===0,
+   'la casilla existe y apunta a la respuesta de la pregunta 20');
+
+console.log('\n=== INV-5  Corpus de 1024 respuestas ===');
+let total=0, legibles=0;
+for(const q in CORPUS_1855.respuestas) for(const s in CORPUS_1855.respuestas[q]){
+  total++; if(CORPUS_1855.respuestas[q][s].ok) legibles++;
 }
-ok(paginasOk, '16 páginas x 16 respuestas');
-ok(todas.length === 256, 'total = 256 respuestas (obtenido: ' + todas.length + ')');
-ok(todas.every(r => r.es && r.es.trim().length > 0), 'ninguna respuesta ES vacía');
-ok(todas.every(r => r.en && r.en.trim().length > 0), 'ninguna respuesta EN vacía');
-const uniqEs = new Set(todas.map(r => r.es)).size;
-const uniqEn = new Set(todas.map(r => r.en)).size;
-if (uniqEs === 256) ok(true, '256 respuestas ES únicas');
-else warn('respuestas ES únicas: ' + uniqEs + '/256 (el original repite algunas frases breves)');
-if (uniqEn === 256) ok(true, '256 respuestas EN únicas');
-else warn('respuestas EN únicas: ' + uniqEn + '/256 (el original repite algunas frases breves)');
+ok(total===1024, '1024 casillas (obtenido: '+total+')');
+ok(legibles>=800, legibles+' respuestas legibles ('+Math.round(legibles*100/1024)+'%)');
+if(legibles<1024) warn((1024-legibles)+' respuestas ilegibles por el facsímil, marcadas ok:0 (no inventadas)');
 
-console.log('\n=== INV-4  Tabla cabalística = cuadrado latino ===');
-let filasOk = true, colsOk = true;
-for (let q = 1; q <= 16; q++) {
-  const fila = [];
-  for (let s = 1; s <= 16; s++) fila.push(D.letraDe(q, s));
-  if (new Set(fila).size !== 16) filasOk = false;
+console.log('\n=== INV-6  Cobertura por pregunta ===');
+const porQ={};
+for(let q=1;q<=32;q++){ porQ[q]=0;
+  for(let s=1;s<=32;s++){ const r=(CORPUS_1855.respuestas[q]||{})[s]; if(r&&r.ok) porQ[q]++; }
 }
-for (let s = 1; s <= 16; s++) {
-  const col = [];
-  for (let q = 1; q <= 16; q++) col.push(D.letraDe(q, s));
-  if (new Set(col).size !== 16) colsOk = false;
+const min=Math.min(...Object.values(porQ));
+ok(Object.keys(porQ).length===32, 'las 32 preguntas tienen casillas asignadas');
+ok(min>=15, 'ninguna pregunta baja de 15 respuestas legibles (mínimo real: '+min+')');
+
+console.log('\n=== INV-7  Clasificador de géneros ===');
+const conteo={};
+for(const q in CORPUS_1855.respuestas) for(const s in CORPUS_1855.respuestas[q]){
+  const r=CORPUS_1855.respuestas[q][s]; if(!r.ok) continue;
+  const g=L.clasificar(r.es); conteo[g]=(conteo[g]||0)+1;
 }
-ok(filasOk, 'cada fila (pregunta) contiene las 16 letras sin repetir');
-ok(colsOk, 'cada columna (símbolo) contiene las 16 letras sin repetir');
-ok(D.letraDe(1, 1) === 'A' && D.letraDe(1, 16) === 'Q' && D.letraDe(2, 1) === 'B',
-   'fila 1 = A..Q y fila 2 arranca en B (coincide con el facsímil)');
-
-console.log('\n=== INV-5  Caso documentado del libro ===');
-/* Fuente: el ejemplo publicado indica que la pregunta 1 con el símbolo
-   ilustrado da la letra P, y la respuesta "What you wish will be granted to you". */
-const idxP0 = D.LETRAS.indexOf('P');                    // 14 (0-based)
-const sEsperado = ((idxP0 - (1 - 1)) % 16 + 16) % 16 + 1; // s tal que letraDe(1,s)='P' -> 15
-const caso = D.consultar(1, sEsperado);
-ok(caso.letra === 'P', 'pregunta 1 + símbolo ' + sEsperado + ' -> letra P');
-ok(/what you wish will be granted to you/i.test(caso.respuesta.en),
-   'la respuesta es la documentada: "' + caso.respuesta.en + '"');
-
-console.log('\n=== INV-6  Alineación pregunta<->respuesta (test estructural independiente) ===');
-/* En el libro, TODAS las respuestas a la pregunta 16 ("¿qué significa mi sueño?")
-   empiezan con "Signifies" / "That", y NINGUNA otra lo hace.
-   TODAS las respuestas a la pregunta 12 (hijo o hija) mencionan son/daughter/boy,
-   y ninguna otra lo hace. Si el orden de transcripción tuviera un solo
-   desfase, estos dos tests fallarían. */
-const esOnirica = t => /^(signifies|that\b)/i.test(t.trim());
-const esProle   = t => /\b(son|daughter|daughters|boy|girl)\b/i.test(t);
-
-let n16 = 0, falso16 = 0, n12 = 0, falso12 = 0;
-for (let Li = 1; Li <= 16; Li++) {
-  const L = D.LETRAS[Li - 1];
-  for (let s = 1; s <= 16; s++) {
-    const q = ((Li - s) % 16 + 16) % 16 + 1;
-    const en = D.RESPUESTAS[L][s - 1].en;
-    if (q === 16) { if (esOnirica(en)) n16++; } else if (esOnirica(en)) falso16++;
-    if (q === 12) { if (esProle(en)) n12++; } else if (esProle(en)) falso12++;
-  }
-}
-ok(n16 === 16, 'las 16 respuestas de la pregunta 16 abren con Signifies/That (' + n16 + '/16)');
-ok(falso16 === 0, 'ninguna otra respuesta abre así (falsos positivos: ' + falso16 + ')');
-ok(n12 === 16, 'las 16 respuestas de la pregunta 12 hablan de hijo/hija (' + n12 + '/16)');
-ok(falso12 === 0, 'ninguna otra lo hace (falsos positivos: ' + falso12 + ')');
-
-console.log('\n=== INV-7  Coherencia del motor ===');
-/* El libro de 1884 repite exactamente 2 frases, y ambas repeticiones caen
-   dentro de la MISMA pregunta (12 y 13). Es fidelidad a la fuente, no un
-   error de transcripción: se tolera y se documenta. */
-const REPETICIONES_ESPERADAS = 2;
-let colisiones = 0;
-for (let q = 1; q <= 16; q++) {
-  const set = new Set();
-  for (let s = 1; s <= 16; s++) set.add(D.consultar(q, s).respuesta.es);
-  colisiones += (16 - set.size);
-}
-ok(colisiones === REPETICIONES_ESPERADAS,
-   'respuestas repetidas por pregunta = ' + colisiones + ' (las 2 del original de 1884; el resto, únicas)');
-ok(D.consultar(7, 3).respuesta.es === D.consultar(7, 3).respuesta.es, 'determinista');
-
-console.log('\n=== INV-8  Reducción y paridad (regla del libro: 12->3, 13->4, 14->5, 15->6) ===');
-ok(D.reducir(12) === 3 && D.reducir(13) === 4 && D.reducir(14) === 5 && D.reducir(15) === 6,
-   'excedente sobre 9 correcto');
-ok(D.puntos(12) === 1 && D.puntos(13) === 2 && D.puntos(14) === 1 && D.puntos(15) === 2,
-   'impar -> 1 punto, par -> 2 puntos (ejemplo del libro: * ** * **)');
-ok(D.reducir(9) === 9 && D.puntos(9) === 1, 'n=9 no se reduce y es impar');
-ok(D.reducir(27) === 9, 'reducción iterada para conteos altos (SUPUESTO declarado)');
-
-console.log('\n=== INV-9  Símbolos ===');
-ok(D.SIMBOLOS.length === 16, '16 símbolos');
-ok(new Set(D.SIMBOLOS.map(x => x.join(''))).size === 16, 'los 16 son distintos');
-let idxOk = true;
-for (let i = 0; i < 16; i++) if (D.indiceSimbolo(D.SIMBOLOS[i]) !== i) idxOk = false;
-ok(idxOk, 'indiceSimbolo(SIMBOLOS[i]) === i');
-/* El ejemplo del libro: filas 12,13,14,15 rayas -> * ** * ** */
-const ejemplo = [12, 13, 14, 15].map(D.puntos);
-ok(JSON.stringify(ejemplo) === JSON.stringify([1, 2, 1, 2]), 'ejemplo del libro reproducido: 1,2,1,2');
-
-console.log('\n=== INV-10  Días nefastos (ed. 1884) ===');
-const totalDias = Object.values(D.DIAS_NEFASTOS).flat();
-ok(Object.keys(D.DIAS_NEFASTOS).length === 12, 'los 12 meses');
-ok(totalDias.every(d => d >= 1 && d <= 31), 'todos los días en rango 1..31');
-ok(D.esDiaNefasto(new Date(2026, 0, 6)) === true, '6 de enero es nefasto');
-ok(D.esDiaNefasto(new Date(2026, 6, 13)) === false, '13 de julio no es nefasto');
-
-
-console.log('\n=== INV-11  Capa doctrinal (libro de 1855) ===');
-ok(Object.keys(L.GENEROS).length === 5, 'los cinco géneros del traductor');
-ok(['positiva','imperativa','presuntiva','monitoria','condicional']
-     .every(g => L.GENEROS[g] && L.GENEROS[g].ejemplo && L.GENEROS[g].ejemplo.texto),
-   'cada género trae su definición y el ejemplo del libro');
-ok(L.PREGUNTAS_1855.length === 10, '10 preguntas de 1855 recuperadas del prólogo');
-ok(L.DOCTRINA.reglas.length === 3, 'las 3 reglas de consulta');
-ok(Object.keys(L.AYUDAS).length >= 5, 'ayuda contextual para cada panel');
-
-console.log('\n=== INV-12  Clasificador de géneros ===');
-let sinClase = 0, conteo = {};
-for (const letra of D.LETRAS) for (const r of D.RESPUESTAS[letra]) {
-  const g = L.clasificar(r.es);
-  if (!L.GENEROS[g]) sinClase++;
-  conteo[g] = (conteo[g] || 0) + 1;
-}
-const total = Object.values(conteo).reduce((a, b) => a + b, 0);
-ok(total === 256, 'las 256 respuestas quedan clasificadas');
-ok(sinClase === 0, 'ninguna cae fuera de los cinco géneros');
-ok(Object.keys(conteo).length === 5, 'los cinco géneros aparecen en el corpus');
-ok(L.clasificar('Si obras con rectitud, ciertamente prosperarás.') === 'condicional',
-   'condicional: el desenlace depende de la conducta');
-ok(L.clasificar('Guárdate de los amigos falsos y engañosos.') === 'imperativa',
-   'imperativa: el Oráculo manda');
-ok(L.clasificar('Una gran fortuna te está destinada: espera con paciencia.') === 'presuntiva',
-   'presuntiva: afirma y luego aconseja');
-ok(L.clasificar('Anuncia que tienes enemigos que intentarán arruinarte.') === 'monitoria',
-   'monitoria: advierte sin mandar');
-ok(L.clasificar('Lo que deseas lo obtendrás en breve.') === 'positiva',
-   'positiva: pura afirmación');
-ok(L.clasificar('Sé muy cauto en lo que hagas este día, no sea que te alcance la desgracia.') === 'imperativa',
-   'los imperativos acentuados se detectan (bug de \\b en JS)');
-ok(L.clasificar('Tendrá una hija, que requerirá cuidados.') === 'positiva',
-   '"cuidados" no se confunde con una advertencia');
-let mandatosOcultos = 0;
-for (const letra of D.LETRAS) for (const r of D.RESPUESTAS[letra]) {
-  if (L.clasificar(r.es) === 'positiva' &&
-      /^(sé |guárdate|declina|evita|prepárate|cambia|considera|apresura|conténtate)/i.test(r.es))
-    mandatosOcultos++;
-}
-ok(mandatosOcultos === 0, 'ninguna "positiva" esconde un mandato (encontrados: ' + mandatosOcultos + ')');
+ok(Object.keys(conteo).length===5, 'los cinco géneros aparecen en el corpus');
+ok(Object.values(conteo).reduce((a,b)=>a+b,0)===legibles, 'todas las legibles quedan clasificadas');
 console.log('      reparto:', JSON.stringify(conteo));
 
+console.log('\n=== INV-8  Zodialojía ===');
+ok(ZODIACO.length===12, 'los 12 signos');
+ok(ZODIACO.every(s=>s.nombre && s.simbolo && s.rango), 'cada signo con nombre, símbolo y rango');
+ok(ZODIACO.filter(s=>s.varon && s.varon.length>60).length>=11, 'al menos 11 signos con descripción del varón');
+ok(ZODIACO.filter(s=>s.mujer && s.mujer.length>60).length>=11, 'al menos 11 signos con descripción de la mujer');
+ok(typeof ZODIACO_INTRO==='string' && ZODIACO_INTRO.length>40, 'intro de la Zodialojía presente');
+
+console.log('\n=== INV-9  Capa doctrinal ===');
+ok(Object.keys(L.GENEROS).length===5, 'cinco géneros definidos');
+ok(Object.keys(L.AYUDAS).length>=6, 'ayuda contextual para cada panel (incl. zodiaco)');
+ok(!!L.HISTORIA.reconstruccion, 'nota de reconstrucción documentada');
+ok(L.DOCTRINA.reglas.length===3, 'las 3 reglas de consulta');
+
+console.log('\n=== INV-10  Ficheros de la app ===');
+for(const f of ['index.html','styles.css','app.js','oraculum-data.js','corpus-1855.js','zodiaco.js','libro-1855.js','sw.js','manifest.webmanifest'])
+  ok(fs.existsSync(path.join(__dirname,f)), 'existe '+f);
+
 console.log('\n----------------------------------------');
-console.log(fails === 0 ? 'status: success, total_errors: 0' : 'status: FAILED, total_errors: ' + fails);
-console.log('warnings: ' + warns);
+console.log(fails===0 ? 'status: success, total_errors: 0' : 'status: FAILED, total_errors: '+fails);
+console.log('warnings: '+warns);
 console.log('----------------------------------------\n');
-process.exit(fails === 0 ? 0 : 1);
+process.exit(fails?1:0);

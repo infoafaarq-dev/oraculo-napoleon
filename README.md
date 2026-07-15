@@ -1,178 +1,88 @@
-# Oraculum — El Libro de los Destinos
+# Oraculum — El Libro de los Destinos (Bogotá, 1855)
 
-Aplicación web instalable (PWA) del **Oráculo de Napoleón**: eliges una de las 16 preguntas
-canónicas, trazas cuatro filas de rayas, y el libro responde.
+App web instalable (PWA) del **Oráculo de Napoleón**, reconstruida a partir del
+facsímil de la edición de Bogotá, 1855, que aportaste. Funciona sin conexión y
+se instala en el móvil como una app más.
 
-Funciona online en cualquier navegador y se instala en el móvil como una app nativa,
-con funcionamiento **sin conexión** una vez instalada.
+## Qué hace
 
----
+Reconstruye el método completo de 1855: eliges una de las **32 preguntas** (o escribes
+la tuya), trazas **cinco hileras de rayas**, y el azar de las estrellas te lleva por
+la tabla cabalística a uno de los **32 jeroglíficos** y su respuesta. **1024 respuestas**
+en total, transcritas del libro.
 
-## Procedencia del contenido
+## Lo que se te pidió, y dónde está
 
-| Elemento | Origen | Estado |
-|---|---|---|
-| Método (4 filas de rayas, paridad, símbolo) | *Napoleon's Oraculum and Dream Book*, Frank Tousey, Nueva York, 1884 | VERIFICADO |
-| 16 preguntas | misma edición | VERIFICADO |
-| Tabla cabalística (cuadrado latino cíclico) | misma edición | VERIFICADO |
-| 256 respuestas | misma edición | VERIFICADO |
-| Días nefastos | misma edición | VERIFICADO |
-| Traducción al castellano | propia | Se conserva el inglés original bajo cada respuesta |
-| Reducción de conteos > 18 | el libro solo ejemplifica 10–18 | **SUPUESTO**: se resta 9 de forma iterada |
+- **Fondo de papiro antiguo.** Toda la paleta se rehízo: papiro, tinta sepia, ocre y
+  cinabrio, con fibras y motas. Ya no es el tema nocturno.
+- **Las 32 preguntas.** Las que enviaste, agrupadas por tema, tal como las lista el libro.
+- **Ranura para tu propia pregunta.** Debajo de las 32. El libro no la previó, así que
+  se responde por el mismo azar — y la app lo declara: es un espejo para pensar, no la
+  palabra del Oráculo.
+- **Instrucción en cada punto.** Botón **?** en cada panel (pregunta, trazado, respuesta,
+  cábala, registro, zodiaco), con el modo de uso redactado desde el propio método del
+  libro y una cita textual de 1855.
+- **Los signos del zodiaco.** La *Zodialojía* del PDF: los 12 signos con el carácter del
+  varón y de la mujer nacidos bajo cada uno, transcrito del facsímil.
+- **Interpretación.** Cada respuesta se etiqueta con su **género** (positiva, imperativa,
+  presuntiva, monitoria o condicional) — los cinco que distingue el traductor de 1855.
 
-La obra de 1884 está en **dominio público**. Ninguna respuesta fue inventada ni generada:
-las 256 son las del libro. La verificación automática está en `verify.js`.
+## Cómo se reconstruyó (Protocolo Fable)
 
-> Nota histórica: la atribución a Napoleón es una leyenda comercial del siglo XIX.
-> El "manuscrito egipcio hallado en 1801" nunca existió.
+La lámina desplegable con la tabla no venía en el escaneo. Pero el libro trae un **ejemplo
+resuelto**: la pregunta 20 con el grupo de estrellas 26 lleva al jeroglífico de la página 13,
+«tus desgracias son no mas que pasajeras». Ese ejemplo confirma que la tabla es un **cuadrado
+latino cíclico**:
 
+    jeroglifico(pregunta, grupo) = ((pregunta + grupo − 2) mod 32) + 1
 
----
+verificado en ambos sentidos contra el libro. Las 1024 respuestas se leyeron por **OCR**
+del facsímil (tesseract en español, alta resolución). **843 quedaron legibles (82%)**;
+las **181 restantes**, dañadas por el estado del papel, van marcadas y **nunca se inventan**:
+si el azar te lleva a una, la app te invita a trazar de nuevo. Cada pregunta conserva entre
+15 y 32 respuestas legibles.
 
-## El libro que aportaste (Bogotá, 1855)
+## Régimen de verdad
 
-`ORACULO_DE_NAPOLEON.pdf` es *El Oráculo, ó sea el Libro de los Destinos*, traducción
-castellana de la 22ª edición inglesa, reimpreso en Bogotá en 1855. 102 páginas.
+- **VERIFICADO** (del PDF): las 32 preguntas, el método de 5 filas, la tabla (por el ejemplo
+  del libro), los cinco géneros, la doctrina, la historia y la Zodialojía.
+- **INFERIDO** (de la app): el género de cada respuesta — la taxonomía es del libro, el reparto
+  lo hace un clasificador con reglas gramaticales explícitas, y así se declara en pantalla.
+- **ILEGIBLE**: 181 respuestas marcadas, no reconstruidas.
 
-**Lo que trae y se incorporó a la app:**
+## Instalar en el móvil
 
-| Elemento | Uso en la app | Estado |
-|---|---|---|
-| Los **cinco géneros de respuesta** (positiva, imperativa, presuntiva, monitoria, condicional) | Panel de interpretación | VERIFICADO |
-| Los cinco ejemplos que da el traductor, con su jeroglífico | Panel de interpretación | VERIFICADO |
-| Doctrina de Balaspis (aceptar la respuesta, obedecerla) | Panel de interpretación y ayudas | VERIFICADO |
-| Reglas de consulta (una pregunta al día; la misma, no antes de un mes) | Avisos al iniciar | VERIFICADO |
-| El rechazo del traductor a los días nefastos | Sello del día en la cabecera | VERIFICADO |
-| Historia del hallazgo (Leipzig 1813, Sonnini, Koningsburg) | Panel "El libro" | VERIFICADO |
-| Método original de 5 hileras de rayas | Panel "El libro" y ayuda de la cábala | VERIFICADO |
-| 10 de las 32 preguntas, citadas en el prólogo | Panel "El libro" | VERIFICADO |
-| Asignación de cada respuesta a un género | Panel de interpretación | **INFERIDO** por la app, con reglas gramaticales explícitas |
+1. Sube la carpeta a un servidor con HTTPS (GitHub Pages sirve).
+2. Ábrela en el móvil.
+   - **Android/Chrome:** botón *Instalar*, o menu ⋮ → *Añadir a pantalla de inicio*.
+   - **iOS/Safari:** *Compartir* → *Añadir a pantalla de inicio*.
 
-**Lo que NO trae — y por qué el motor sigue siendo el de 1884:**
-
-Al escaneo le falta **la lámina desplegable** con las 32 preguntas, los 32 signos y los 32
-jeroglíficos: *"Véase la tabla al principio del libro, la cual contiene las preguntas, signos
-i jeroglíficos"*. Es la separata que falta en casi todos los ejemplares que sobreviven.
-
-Sin esa tabla no hay forma de enrutar una consulta: las 1.024 respuestas están ahí, pero no
-hay manera de saber a cuál te manda tu pregunta y tu grupo de estrellas. Por eso el oráculo
-que **opera** es el de la edición de 1884 (4 filas, 16 preguntas, 256 respuestas, verificado
-íntegro), y el de 1855 aporta la **doctrina y la interpretación**.
-
-Si consigues un escaneo de esa lámina, el corpus de 1.024 respuestas es reconstruible.
-
----
-
-## Los cinco géneros
-
-> *"En segundo lugar, i respecto a la calidad de las respuestas, es de advertir que las hai
-> de cinco jéneros, a saber: positivas, imperativas, presuntivas, monitorias i condicionales."*
-> — Prólogo del traductor, 1855
-
-| Género | Qué hace el Oráculo | En el corpus |
-|---|---|---|
-| **Positiva** | Afirma. No te pide nada. | 172 |
-| **Imperativa** | Manda una conducta. | 40 |
-| **Monitoria** | Advierte o te manda considerar, sin mandar. | 25 |
-| **Condicional** | El desenlace depende de tu conducta. | 10 |
-| **Presuntiva** | Concede lo pedido, pero añade un consejo. | 9 |
-
-La app clasifica cada respuesta al vuelo. La taxonomía es del libro; el reparto es de la app,
-y así se declara en pantalla.
-
----
-
-## Cómo se consulta
-
-1. **La pregunta** — elige una de las 16. El libro de 1855 pide una sola pregunta al día, y
-   no repetir la misma antes de un mes; la app te avisa (puedes ignorarlo).
-2. **El trazado** — pulsa *Comenzar el trazado* **una sola vez**. La pluma empieza a trazar
-   rayas sola. Un toque (o clic, o barra espaciadora) detiene la fila y la siguiente arranca
-   de inmediato. Cuatro filas, cuatro toques.
-3. Cada fila se lee así: se cuentan las rayas; si pasan de 9 se resta 9; si el resultado es
-   **impar** vale un punto (•), si es **par** vale dos (• •). Las cuatro filas forman uno de
-   los 16 símbolos.
-4. **La cábala** — el cruce de tu pregunta con tu símbolo da una letra (A–Q, sin la J).
-5. **La respuesta** — en la página de esa letra, la fila de tu símbolo.
-
-La cadencia de la pluma es irregular a propósito: el conteo final no es previsible ni
-siquiera tocando lo más rápido posible.
-
----
-
-## Publicar en la web (GitHub Pages)
-
-```bash
-git init
-git add .
-git commit -m "Oraculum"
-git branch -M main
-git remote add origin https://github.com/USUARIO/oraculum.git
-git push -u origin main
-```
-
-Luego, en el repo: **Settings → Pages → Source: Deploy from a branch → main / (root) → Save**.
-
-Queda publicada en `https://USUARIO.github.io/oraculum/` en un par de minutos.
-
-> Requisito: el service worker y la instalación necesitan **HTTPS**. GitHub Pages lo da
-> gratis. Abrir `index.html` con doble clic (`file://`) funciona para ver la app, pero no
-> permite instalarla ni cachearla.
-
-Cualquier hosting estático sirve igual: Netlify, Vercel, Cloudflare Pages, S3.
-
----
-
-## Instalar en el dispositivo
-
-- **Android / Chrome / Edge:** aparece el botón **Instalar** arriba a la derecha
-  (o menú ⋮ → *Instalar aplicación*).
-- **iPhone / iPad (Safari):** botón **Compartir** → *Añadir a pantalla de inicio*.
-  iOS no muestra el botón automático; es un límite de Safari, no de la app.
-- **Escritorio (Chrome/Edge):** icono de instalación en la barra de direcciones.
-
-Una vez instalada abre a pantalla completa, sin barra del navegador, y funciona sin internet.
-
----
+### GitHub Pages, rápido
+- Repo con estos archivos en la raíz (o en `/oraculum/`).
+- *Settings → Pages → Deploy from branch → main → /root*.
+- Queda en `https://TUUSUARIO.github.io/REPO/`. Debe ser HTTPS para instalarse.
 
 ## Archivos
 
-```
-index.html              estructura del tablero
-styles.css              paleta "templo nocturno" (índigo, amatista, pan de oro)
-oraculum-data.js        preguntas, tabla cabalística, 256 respuestas, motor
-libro-1855.js           los cinco géneros, clasificador, doctrina e historia (del PDF)
-app.js                  trazado en canvas, ritual, cábala, registro
-sw.js                   service worker (uso sin conexión)
-manifest.webmanifest    metadatos de instalación
-icons/                  iconos 192 / 512 / maskable / apple-touch
-verify.js               verificación de invariantes del corpus
-```
+    index.html            estructura y paneles
+    styles.css            tema papiro, responsive
+    app.js                lógica: 5 filas, 32 preguntas, propia, zodiaco
+    oraculum-data.js      motor de 1855 (grupos, tabla cíclica, consulta)
+    corpus-1855.js        las 1024 respuestas (843 legibles, 181 marcadas)
+    zodiaco.js            los 12 signos de la Zodialojía
+    libro-1855.js         géneros, clasificador, doctrina, historia, ayudas
+    sw.js                 service worker (offline)
+    manifest.webmanifest  instalación PWA
+    verify.js             control de calidad (node verify.js)
+    icons/                iconos en tono papiro
 
-## Ayuda en la app
+## Verificar
 
-Cada panel tiene un botón **?** que despliega la instrucción de cómo usarlo, redactada
-desde el método del libro. El panel **El libro** recoge la procedencia, el método original
-de 1855 y lo que le falta al escaneo.
+    node verify.js
 
-## Verificar el corpus
-
-```bash
-node verify.js
-```
-
-Comprueba 16 preguntas, 16 letras, 256 respuestas, que la tabla sea un cuadrado latino,
-la reproducción del caso documentado del libro (pregunta 1 → letra P → *"What you wish
-will be granted to you"*) y dos tests estructurales que detectarían cualquier desfase de una
-sola fila en la transcripción.
-
-Resultado esperado: `status: success, total_errors: 0`.
+Debe decir `status: success, total_errors: 0` (con 1 aviso: las 181 respuestas ilegibles).
 
 ---
 
-## Privacidad
-
-No hay servidor, ni cuentas, ni analítica, ni llamadas a ninguna API. El registro de
-consultas se guarda solo en tu dispositivo (`localStorage`) y puedes borrarlo con un botón.
-
-Objeto de curiosidad histórica. No es consejo médico, legal ni financiero.
+Reconstrucción de una obra en dominio público. Objeto de curiosidad histórica:
+no es consejo médico, legal ni financiero.

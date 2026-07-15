@@ -163,25 +163,10 @@ const DOCTRINA = {
 const HISTORIA = {
   relato: 'Tras la derrota de Leipzig en 1813, el manuscrito apareció en el equipaje de campaña de Napoleón. Cayó en manos de un oficial prusiano que, ignorando su valor, lo vendió por unos napoleones a un general francés prisionero en la fortaleza de Koningsburg. Este quiso devolverlo a las Tullerías, pero murió tras la amputación de su brazo derecho. El original habría sido un papiro egipcio hallado en 1801 por M. Sonnini en una tumba del Alto Egipto, cerca del monte Líbico.',
   advertencia: 'Nada de esto está documentado fuera del propio libro. El "manuscrito egipcio" no ha aparecido nunca y la atribución a Napoleón es, casi con certeza, un recurso comercial del siglo XIX. El libro se vendió muchísimo precisamente por ella.',
-  edicion: 'El PDF que aportaste es la traducción castellana de la 22ª edición inglesa, reimpresa en Bogotá en 1855. Trae el método (cinco hileras de rayas), la doctrina, las 1.024 respuestas y la Zodialojía. Le falta la lámina desplegable con las 32 preguntas, los 32 signos y los 32 jeroglíficos — la que permite enrutar una consulta. Sin ella, el oráculo de 1855 no puede operarse.',
-  metodo1855: 'Cinco hileras de rayas (no cuatro). Se cuentan: impar, una estrella; par, dos. Las cinco filas forman uno de los 32 grupos. El cruce del grupo con la pregunta en la tabla da un jeroglífico — el Arado, el Puñal, el Cuerno de la Abundancia, el Arco y Flecha, la Casa Fortificada, los Huesos Cruzados, la Doncella… Cada jeroglífico ocupa dos páginas con 32 respuestas.'
+  edicion: 'Esta app reconstruye la traducción castellana de la 22ª edición inglesa, reimpresa en Bogotá en 1855: 32 preguntas, cinco hileras de rayas, 32 jeroglíficos y 1.024 respuestas, más la Zodialojía. El corpus se transcribió del facsímil que aportaste.',
+  metodo1855: 'Cinco hileras de rayas. Se cuentan: si el número es impar, una estrella; si es par, dos. Las cinco filas forman uno de los 32 grupos de estrellas. El cruce del grupo con tu pregunta, en la tabla cabalística, da un jeroglífico — el Sol, el Arado, el Cuerno de la Abundancia, el Arco y Flecha, los Huesos Cruzados, la Doncella… Cada jeroglífico es una página con 32 respuestas.',
+  reconstruccion: 'La lámina desplegable con la tabla no venía en el escaneo, pero el propio libro trae un ejemplo resuelto: la pregunta 20 con el grupo de estrellas 26 lleva al jeroglífico de la página 13, «tus desgracias son no mas que pasajeras». Ese ejemplo confirma que la tabla es un cuadrado latino cíclico, y así se reconstruyó, verificándola en ambos sentidos. Las 1.024 respuestas se leyeron por OCR del facsímil; unas 180 quedaron ilegibles por el estado del papel y van señaladas como tales — nunca se inventan. Si el azar te lleva a una de ellas, basta trazar de nuevo.'
 };
-
-/* ---------- Las preguntas de 1855 que sí se recuperan ----------
-   Citadas por el traductor en el prólogo, con su número de tabla. */
-
-const PREGUNTAS_1855 = [
-  { n: 6,  texto: '¿Seré yo afortunado o desgraciado en el juego?' },
-  { n: 8,  texto: '¿Seré yo eminente y llevaré la preferencia en mis empresas?' },
-  { n: 12, texto: '¿Será inmortalizado mi nombre y aplaudido por la posteridad?' },
-  { n: 15, texto: '¿Cuál es el aspecto de las estaciones, y qué cambios políticos habrá probablemente?' },
-  { n: 17, texto: '¿Me será fiel mi querida en mi ausencia?' },
-  { n: 19, texto: '¿Serán mis hijos virtuosos y felices después de mi muerte?' },
-  { n: 20, texto: '¿Me veré yo libre algún día de tantas desgracias?' },
-  { n: 24, texto: 'Infórmame de todos los particulares de mi futuro marido.' },
-  { n: 28, texto: '¿Encontraré yo alguna vez un tesoro?' },
-  { n: 30, texto: '¿Tengo yo alguno o muchos enemigos?' }
-];
 
 /* ---------- Ayudas contextuales de cada panel ---------- */
 
@@ -189,57 +174,61 @@ const AYUDAS = {
   pregunta: {
     titulo: 'Cómo se elige la pregunta',
     pasos: [
-      'Escoge una sola pregunta de la lista. No la modifiques ni la mezcles con otra: el libro pide pronunciarla «tal como está escrita, sin quitar ni poner nada de ella».',
-      'Pronúnciala mientras la señalas con el índice de la mano izquierda. Así lo prescribe el rito.',
-      'Una pregunta al día. La misma pregunta, no antes de un mes.'
+      'El libro de 1855 trae <strong>32 preguntas</strong>. Escoge una sola: no la modifiques ni la mezcles, pues el rito pide pronunciarla «tal como está escrita».',
+      'Si ninguna encaja, usa la <strong>ranura de pregunta propia</strong> al final de la lista y escribe la tuya. El Oráculo la encaminará al registro afín por su tema.',
+      'Una pregunta al día. La misma, no antes de un mes: la app te avisa, pero puedes seguir.'
     ],
     cita: 'El Oráculo está dotado de toda la variedad de respuesta que estas preguntas requieren.'
   },
   trazado: {
     titulo: 'Cómo se trazan las rayas',
     pasos: [
-      'Pulsa <em>Comenzar</em> una sola vez. La pluma empieza a trazar sola: no pienses en ello, «deja que la pluma sea tu guía».',
+      'Pulsa <em>Comenzar</em> una sola vez. La pluma traza rayas sola: no lo pienses, «deja que la pluma sea tu guía».',
       'Un toque detiene la fila. La siguiente arranca de inmediato. Cuatro filas, cuatro toques.',
-      'Se cuentan las rayas de cada fila. Si pasan de nueve, solo cuenta el excedente. Si el número es <strong>impar</strong> vale un punto (•); si es <strong>par</strong>, dos (• •).',
-      'Los cuatro puntos forman tu símbolo: uno de dieciséis.'
+      'Se cuentan las rayas de cada fila. Si pasan de nueve, cuenta solo el excedente. Si es <strong>impar</strong> vale un punto (•); si es <strong>par</strong>, dos (• •).',
+      'Los cuatro puntos forman tu símbolo, uno de dieciséis.'
     ],
-    cita: 'Basta marcar las hileras de rayas con tinta o con cualquier otro líquido, con caña, con pluma, con un palo o con el dedo, con un carbón en la pared, o con un bastón en la arena — sin invocaciones ni embelecos.'
+    cita: 'Basta marcar las hileras de rayas con caña, pluma, un palo o el dedo, con un carbón en la pared o con un bastón en la arena — sin invocaciones ni embelecos.'
   },
   respuesta: {
     titulo: 'Cómo se lee la respuesta',
     pasos: [
-      'La respuesta no admite negociación: el libro obliga a «contentarse con cualquiera que toque en suerte recibir».',
-      'Fíjate en el <strong>género</strong>. El traductor de 1855 distingue cinco, y cada uno te pide algo distinto: unos afirman, otros mandan, otros solo advierten.',
-      'Debajo tienes el texto inglés original de 1884, por si quieres contrastar la traducción.'
+      'La respuesta no se negocia: el libro obliga a «contentarse con cualquiera que toque en suerte recibir».',
+      'Fíjate en el <strong>género</strong>. El traductor de 1855 distingue cinco, y cada uno pide algo distinto: unos afirman, otros mandan, otros solo advierten.',
+      'Debajo va el texto inglés original de 1884, por si quieres contrastarlo.'
     ],
     cita: '¿Si no se han de obedecer las órdenes de Hermes, para qué es el preguntar?'
+  },
+  zodiaco: {
+    titulo: 'Cómo se lee tu signo',
+    pasos: [
+      'Elige tu signo en el menú, o pulsa <strong>Mi signo hoy</strong> para ver el del día.',
+      'El libro da dos retratos por signo: el del <strong>varón</strong> y el de la <strong>mujer</strong> nacidos bajo él. Son de 1855: reflejan la moral de su época.',
+      'El texto es de la sección «Zodialojía» del propio libro, transcrita del escaneo.'
+    ],
+    cita: 'Examina tu índole con estricta imparcialidad, sin atribuirte virtudes que no posees, ni vicios a que no eres aficionado.'
   },
   cabala: {
     titulo: 'Cómo el símbolo se vuelve letra',
     pasos: [
-      'Busca tu símbolo en la fila de arriba (las columnas) y tu pregunta en la columna de la izquierda (las filas).',
-      'Donde se cruzan hay una letra. Esa letra es una página del Libro de los Destinos.',
-      'En esa página, la respuesta que está junto a tu símbolo es la que el Oráculo te da.',
-      'En la edición de 1855 la letra es un jeroglífico — el Arado, el Puñal, el Arco y Flecha — y las respuestas son 1.024. El mecanismo es el mismo.'
+      'Busca tu símbolo en la fila de arriba (columnas) y tu pregunta en la columna de la izquierda (filas).',
+      'Donde se cruzan hay una letra: una página del Libro de los Destinos.',
+      'En esa página, la respuesta junto a tu símbolo es la que el Oráculo te da.',
+      'En la edición de 1855 la letra era un jeroglífico — el Arado, el Puñal, el Arco y Flecha — y las respuestas, 1.024. El mecanismo es el mismo.'
     ],
-    cita: 'Bajando un dedo desde las estrellas en línea perpendicular, y corriendo otro desde la pregunta, se encontrarán los dos dedos en el mismo punto.'
+    cita: 'Bajando un dedo desde las estrellas i corriendo otro desde la pregunta, se encontrarán ambos en el mismo punto.'
   },
   registro: {
     titulo: 'Para qué sirve el registro',
     pasos: [
-      'Guarda tus últimas consultas para que puedas cumplir la regla del libro: una pregunta al día, y la misma no antes de un mes.',
-      'Vive solo en este dispositivo. No hay servidor, ni cuenta, ni nadie más que lo vea.',
+      'Guarda tus últimas consultas para cumplir la regla: una pregunta al día, la misma no antes de un mes.',
+      'Vive solo en este dispositivo. No hay servidor ni cuenta.',
       'Puedes borrarlo cuando quieras.'
     ],
-    cita: null
-  },
-  libro: {
-    titulo: 'De dónde sale todo esto',
-    pasos: [],
     cita: null
   }
 };
 
 if (typeof module !== 'undefined' && module.exports) {
-  module.exports = { GENEROS, clasificar, DOCTRINA, HISTORIA, PREGUNTAS_1855, AYUDAS };
+  module.exports = { GENEROS, clasificar, DOCTRINA, HISTORIA, AYUDAS };
 }

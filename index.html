@@ -4,10 +4,10 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Oraculum — El Libro de los Destinos</title>
-<meta name="description" content="El Oráculo de Napoleón. Traza las rayas, elige tu pregunta y recibe la respuesta del Libro de los Destinos, con su interpretación según el libro de 1855.">
-<meta name="theme-color" content="#120C24">
+<meta name="description" content="El Oráculo de Napoleón, edición de 1855. 32 preguntas, cinco hileras de rayas, 1024 respuestas, con la Zodialojía y la interpretación del libro.">
+<meta name="theme-color" content="#E8D8B0">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="Oraculum">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" href="icons/icon-192.png">
@@ -42,7 +42,17 @@
       <button class="ayuda-btn" type="button" data-ayuda="pregunta" aria-expanded="false" aria-label="Cómo se usa este panel">?</button>
     </div>
     <div class="ayuda" id="ayuda-pregunta" hidden></div>
-    <ul class="preguntas" id="preguntas" role="listbox" aria-label="Las dieciséis preguntas del Oráculo"></ul>
+    <ul class="preguntas" id="preguntas" role="listbox" aria-label="Las treinta y dos preguntas del Oráculo"></ul>
+    <div class="propia">
+      <span class="propia-rotulo">O escribe tu propia pregunta</span>
+      <div class="propia-caja">
+        <input class="propia-input" id="propiaInput" type="text" maxlength="140"
+               placeholder="Ej.: ¿Debo aceptar lo que se me ofrece?" aria-label="Tu pregunta propia">
+        <button class="propia-ok" id="propiaOk" type="button">Fijar</button>
+      </div>
+      <p class="propia-nota">El Oráculo de 1855 tiene 32 preguntas fijas. Tu pregunta libre se responde
+        por el mismo azar de las estrellas, pero el libro no la previó: tómala como un espejo para pensar, no como su palabra.</p>
+    </div>
   </section>
 
   <section class="panel panel-trazado" aria-labelledby="tit-trazado">
@@ -54,10 +64,8 @@
     <div class="ayuda" id="ayuda-trazado" hidden></div>
 
     <div class="lienzo-envoltura">
-      <canvas id="lienzo" class="lienzo" width="900" height="360" aria-label="Lienzo donde se trazan las cuatro filas de rayas"></canvas>
-      <button class="lienzo-tap" id="lienzoTap" type="button" aria-live="polite">
-        <span id="lienzoTapTexto"></span>
-      </button>
+      <canvas id="lienzo" class="lienzo" width="900" height="360" aria-label="Lienzo donde se trazan las cinco filas de rayas"></canvas>
+      <button class="lienzo-tap" id="lienzoTap" type="button" aria-live="polite"><span id="lienzoTapTexto"></span></button>
       <ol class="lecturas" id="lecturas" aria-label="Lectura de cada fila"></ol>
     </div>
 
@@ -68,13 +76,13 @@
 
     <div class="sello-fila" id="selloFila" hidden>
       <div class="sello">
-        <span class="sello-rotulo">Símbolo</span>
+        <span class="sello-rotulo">Estrellas</span>
         <div class="sello-glifo" id="selloGlifo"></div>
       </div>
       <div class="flecha" aria-hidden="true">→</div>
       <div class="sello">
-        <span class="sello-rotulo">Letra</span>
-        <div class="sello-letra" id="selloLetra">·</div>
+        <span class="sello-rotulo">Jeroglífico</span>
+        <div class="sello-jero" id="selloJero">·</div>
       </div>
     </div>
   </section>
@@ -87,17 +95,12 @@
     </div>
     <div class="ayuda" id="ayuda-respuesta" hidden></div>
 
-    <div class="respuesta-vacia" id="respuestaVacia">
-      <p>Elige tu pregunta y traza las rayas.<br>El Oráculo responde una sola vez.</p>
-    </div>
+    <div class="respuesta-vacia" id="respuestaVacia"><p>Elige tu pregunta y traza las rayas.<br>El Oráculo responde una sola vez.</p></div>
 
     <blockquote class="respuesta" id="respuesta" hidden>
       <p class="respuesta-pregunta" id="respuestaPregunta"></p>
       <p class="respuesta-texto" id="respuestaTexto"></p>
-      <footer class="respuesta-pie">
-        <span class="respuesta-original" id="respuestaOriginal"></span>
-        <span class="respuesta-ref" id="respuestaRef"></span>
-      </footer>
+      <footer class="respuesta-pie"><span class="respuesta-ref" id="respuestaRef"></span></footer>
     </blockquote>
 
     <div class="interpretacion" id="interpretacion" hidden>
@@ -129,9 +132,7 @@
     </div>
     <div class="ayuda" id="ayuda-cabala" hidden></div>
     <div class="cabala-envoltura" id="cabalaEnvoltura" hidden>
-      <table class="cabala" id="cabala">
-        <caption class="visually-hidden">Tabla cabalística: preguntas por símbolos</caption>
-      </table>
+      <table class="cabala" id="cabala"><caption class="visually-hidden">Tabla cabalística: preguntas por grupos de estrellas</caption></table>
     </div>
   </section>
 
@@ -147,12 +148,24 @@
     <p class="registro-vacio" id="registroVacio">Aún no has consultado al Oráculo.</p>
   </section>
 
+  <section class="panel panel-zodiaco" aria-labelledby="tit-zodiaco">
+    <div class="panel-cab">
+      <span class="paso paso-mudo">✦</span>
+      <h2 id="tit-zodiaco">La Zodialojía</h2>
+      <button class="ayuda-btn" type="button" data-ayuda="zodiaco" aria-expanded="false" aria-label="Cómo se usa este panel">?</button>
+    </div>
+    <div class="ayuda" id="ayuda-zodiaco" hidden></div>
+    <p class="zodiaco-intro" id="zodiacoIntro"></p>
+    <div class="zodiaco-rejilla" id="zodiacoRejilla" role="listbox" aria-label="Los doce signos"></div>
+    <div class="signo-detalle" id="signoDetalle" hidden></div>
+  </section>
+
   <section class="panel panel-libro" aria-labelledby="tit-libro">
     <details id="detallesLibro">
       <summary class="panel-cab panel-cab-summary">
         <span class="paso paso-mudo">✦</span>
         <h2 id="tit-libro">El libro</h2>
-        <span class="panel-nota">Procedencia, método original y lo que falta</span>
+        <span class="panel-nota">Procedencia, método y cómo se reconstruyó</span>
       </summary>
       <div class="libro-cuerpo" id="libroCuerpo"></div>
     </details>
@@ -161,17 +174,16 @@
 </main>
 
 <footer class="pie">
-  <p>
-    Motor y 256 respuestas: <em>Napoleon's Oraculum and Dream Book</em> (Frank Tousey, Nueva York, 1884).
-    Doctrina, método original, historia y los cinco géneros de respuesta:
-    <em>El Oráculo, ó sea el Libro de los Destinos</em> (Bogotá, 1855). Ambas en dominio público.
-    Traducción propia. Ninguna respuesta fue inventada.
-  </p>
+  <p>Reconstrucción del <em>Oráculo, ó sea el Libro de los Destinos</em> (Bogotá, 1855), traducción de la 22ª edición inglesa,
+    obra en dominio público. 32 preguntas, cinco hileras de rayas, 1024 respuestas y la Zodialojía, transcritas del facsímil.
+    Las respuestas ilegibles por el estado del escaneo van señaladas y no se inventan.</p>
   <p class="pie-aviso">Objeto de curiosidad histórica. No es consejo médico, legal ni financiero.</p>
 </footer>
 
 <div class="aviso" id="aviso" role="status" hidden></div>
 
+<script src="corpus-1855.js"></script>
+<script src="zodiaco.js"></script>
 <script src="oraculum-data.js"></script>
 <script src="libro-1855.js"></script>
 <script src="app.js"></script>
