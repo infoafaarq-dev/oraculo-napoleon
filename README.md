@@ -4,6 +4,25 @@ App web instalable (PWA) del **Oráculo de Napoleón**, reconstruida a partir de
 facsímil de la edición de Bogotá, 1855, que aportaste. Funciona sin conexión y
 se instala en el móvil como una app más.
 
+
+## Novedades de esta versión
+
+- **Todo el castellano de 1855 modernizado** a español latinoamericano actual: la "i"
+  conjunción pasó a "y", se corrigieron grafías (jénio→genio, acia→hacia, esceso→exceso),
+  acentos y residuos de OCR. Se modernizaron las respuestas, la Zodialojía y los textos del libro.
+- **Rescate de casillas ilegibles.** Se volvió al facsímil con re-OCR quirúrgico banda por banda
+  y preprocesamiento agresivo. Se recuperaron 10 respuestas más, que se muestran marcadas como
+  *texto recuperado* (confianza media), nunca como verificadas. Quedan 171 ilegibles, señaladas.
+  Cobertura con texto: **853/1024 (83%)**.
+- **Zodiaco enriquecido.** Cada signo trae ahora: una descripción moderna (elemento, modalidad,
+  planeta regente y rasgos), el texto histórico de 1855 (desplegable), y una **lectura semanal**
+  que rota de forma determinista con el número de semana.
+- **Consejo del día ligado a la pregunta.** Al elegir una pregunta aparece un consejo amplio,
+  del tema de esa pregunta, que cambia cada día. Lenguaje deliberadamente abierto para que
+  siempre calce — declarado como espejo para pensar, no vaticinio.
+- **Más didáctica.** Cada bloque explica qué es y de dónde viene, separando siempre lo que es
+  del libro de lo que genera la app.
+
 ## Qué hace
 
 Reconstruye el método completo de 1855: eliges una de las **32 preguntas** (o escribes
@@ -37,10 +56,10 @@ latino cíclico**:
     jeroglifico(pregunta, grupo) = ((pregunta + grupo − 2) mod 32) + 1
 
 verificado en ambos sentidos contra el libro. Las 1024 respuestas se leyeron por **OCR**
-del facsímil (tesseract en español, alta resolución). **843 quedaron legibles (82%)**;
-las **181 restantes**, dañadas por el estado del papel, van marcadas y **nunca se inventan**:
+del facsímil (tesseract en español, alta resolución). **843 quedaron legibles (82%)** y **10 más se recuperaron** con re-OCR (marcadas como texto
+recuperado). Las **171 restantes**, dañadas por el papel, van marcadas y **nunca se inventan**:
 si el azar te lleva a una, la app te invita a trazar de nuevo. Cada pregunta conserva entre
-15 y 32 respuestas legibles.
+15 y 32 respuestas con texto.
 
 ## Régimen de verdad
 
@@ -48,7 +67,10 @@ si el azar te lleva a una, la app te invita a trazar de nuevo. Cada pregunta con
   del libro), los cinco géneros, la doctrina, la historia y la Zodialojía.
 - **INFERIDO** (de la app): el género de cada respuesta — la taxonomía es del libro, el reparto
   lo hace un clasificador con reglas gramaticales explícitas, y así se declara en pantalla.
-- **ILEGIBLE**: 181 respuestas marcadas, no reconstruidas.
+- **RECUPERADO** (ok:2): 10 respuestas re-OCR del facsímil, mostradas con aviso de confianza media.
+- **ILEGIBLE**: 171 respuestas marcadas, no reconstruidas.
+- **GENERADO por la app** (no del libro, declarado en pantalla): la lectura semanal del zodiaco,
+  el consejo diario, y la descripción moderna de cada signo (rasgos astrológicos de conocimiento común).
 
 ## Instalar en el móvil
 
@@ -69,7 +91,8 @@ si el azar te lleva a una, la app te invita a trazar de nuevo. Cada pregunta con
     app.js                lógica: 5 filas, 32 preguntas, propia, zodiaco
     oraculum-data.js      motor de 1855 (grupos, tabla cíclica, consulta)
     corpus-1855.js        las 1024 respuestas (843 legibles, 181 marcadas)
-    zodiaco.js            los 12 signos de la Zodialojía
+    zodiaco.js            los 12 signos de la Zodialojía (texto de 1855)
+    zodiaco-plus.js       descripción moderna, lectura semanal, consejo diario
     libro-1855.js         géneros, clasificador, doctrina, historia, ayudas
     sw.js                 service worker (offline)
     manifest.webmanifest  instalación PWA

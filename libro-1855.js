@@ -155,7 +155,7 @@ const DOCTRINA = {
     'La pregunta se pronuncia tal como está escrita, sin quitar ni poner nada de ella.'
   ],
   diasNefastos: 'La edición inglesa lista días nefastos en que no debe consultarse. El traductor de 1855 los descarta de plano: «todos los días del año son santos y buenos para consultar el Libro de los Destinos, sin reparar en que sea de noche o de día, que haga claro u oscuro, que llueva o que nieve». Esta app muestra el día, pero no te lo impide.',
-  ritual: 'El libro permite prescindir del círculo, los signos del Zodiaco y la caña mojada en sangre. Basta una pluma, un lápiz o un carbón — o el dedo en la arena. Sin invocaciones ni embelecos.'
+  ritual: 'El libro permite prescindir del círculo, los signos del Zodiaco y la caña mojada en sangre. Basta una pluma, un lápiz o un carbón — o el dedo en la arena. Sin invocaciones ni adornos vacíos: en este caso es solo un clic y la intuición construyendo tu presagio.'
 };
 
 /* ---------- Historia real del libro ---------- */
@@ -165,7 +165,7 @@ const HISTORIA = {
   advertencia: 'Nada de esto está documentado fuera del propio libro. El "manuscrito egipcio" no ha aparecido nunca y la atribución a Napoleón es, casi con certeza, un recurso comercial del siglo XIX. El libro se vendió muchísimo precisamente por ella.',
   edicion: 'Esta app reconstruye la traducción castellana de la 22ª edición inglesa, reimpresa en Bogotá en 1855: 32 preguntas, cinco hileras de rayas, 32 jeroglíficos y 1.024 respuestas, más la Zodialojía. El corpus se transcribió del facsímil que aportaste.',
   metodo1855: 'Cinco hileras de rayas. Se cuentan: si el número es impar, una estrella; si es par, dos. Las cinco filas forman uno de los 32 grupos de estrellas. El cruce del grupo con tu pregunta, en la tabla cabalística, da un jeroglífico — el Sol, el Arado, el Cuerno de la Abundancia, el Arco y Flecha, los Huesos Cruzados, la Doncella… Cada jeroglífico es una página con 32 respuestas.',
-  reconstruccion: 'La lámina desplegable con la tabla no venía en el escaneo, pero el propio libro trae un ejemplo resuelto: la pregunta 20 con el grupo de estrellas 26 lleva al jeroglífico de la página 13, «tus desgracias son no mas que pasajeras». Ese ejemplo confirma que la tabla es un cuadrado latino cíclico, y así se reconstruyó, verificándola en ambos sentidos. Las 1.024 respuestas se leyeron por OCR del facsímil; unas 180 quedaron ilegibles por el estado del papel y van señaladas como tales — nunca se inventan. Si el azar te lleva a una de ellas, basta trazar de nuevo.'
+  reconstruccion: 'La lámina desplegable con la tabla no venía en el escaneo, pero el propio libro trae un ejemplo resuelto: la pregunta 20 con el grupo de estrellas 26 lleva al jeroglífico de la página 13, «tus desgracias no son más que pasajeras». Ese ejemplo confirma que la tabla es un cuadrado latino cíclico, y así se reconstruyó, verificándola en ambos sentidos. Las 1.024 respuestas se leyeron por OCR del facsímil; unas 180 quedaron ilegibles por el estado del papel y van señaladas como tales — nunca se inventan. Si el azar te lleva a una de ellas, basta trazar de nuevo.'
 };
 
 /* ---------- Ayudas contextuales de cada panel ---------- */

@@ -46,7 +46,8 @@
     elRegistro=$('registro'), elRegistroVacio=$('registroVacio'), btnBorrar=$('btnBorrarRegistro'),
     elLibroCuerpo=$('libroCuerpo'), elAviso=$('aviso'),
     elPropiaInput=$('propiaInput'), elPropiaOk=$('propiaOk'),
-    elZodiacoRejilla=$('zodiacoRejilla'), elZodiacoIntro=$('zodiacoIntro'), elSignoDetalle=$('signoDetalle');
+    elZodiacoRejilla=$('zodiacoRejilla'), elZodiacoIntro=$('zodiacoIntro'), elSignoDetalle=$('signoDetalle'),
+    elConsejoDia=$('consejoDia'), elConsejoTexto=$('consejoTexto');
 
   const ctx = elLienzo.getContext('2d');
   let W=0, H=0;
@@ -92,6 +93,7 @@
     btnIniciar.disabled=false;
     if (estado.resuelto) reiniciar(false);
     pintarCabala(typeof n==='number'?n:null);
+    mostrarConsejo(CORPUS_1855.preguntas[n-1].grupo);
   }
 
   function elegirPropia(){
@@ -103,7 +105,13 @@
     btnIniciar.disabled=false;
     if (estado.resuelto) reiniciar(false);
     pintarCabala(null);
+    mostrarConsejo(null);
     mostrarAviso('Tu pregunta queda fijada. El Oráculo la responderá por el azar de las estrellas.','Entendido',ocultarAviso);
+  }
+
+  function mostrarConsejo(tema){
+    elConsejoTexto.textContent = consejoDiario(tema);
+    elConsejoDia.hidden = false;
   }
 
   function marcarRepetidas(){
@@ -239,16 +247,22 @@
       elRespuestaPregunta.textContent=String(r.pregunta.n).padStart(2,'0')+' · '+r.pregunta.texto;
     }
 
-    if (r.respuesta.ok){
+    if (r.respuesta.ok===1){
+      elRespuestaTexto.textContent=r.respuesta.es;
+      elRespuestaTexto.classList.remove('ilegible','recuperada');
+      pintarInterpretacion(r.respuesta.es);
+    } else if (r.respuesta.ok===2){
       elRespuestaTexto.textContent=r.respuesta.es;
       elRespuestaTexto.classList.remove('ilegible');
+      elRespuestaTexto.classList.add('recuperada');
       pintarInterpretacion(r.respuesta.es);
     } else {
       elRespuestaTexto.textContent='El azar te llevó a una respuesta que el facsímil de 1855 dejó ilegible. El libro la tiene; el escaneo, no. Traza de nuevo para recibir otra.';
       elRespuestaTexto.classList.add('ilegible');
+      elRespuestaTexto.classList.remove('recuperada');
       elInterpretacion.hidden=true;
     }
-    elRespuestaRef.textContent=r.nombreJeroglifico+' · grupo '+s+'/32';
+    elRespuestaRef.textContent=r.nombreJeroglifico+' · grupo '+s+'/32'+(r.respuesta.ok===2?' · texto recuperado':'');
     elRespuestaVacia.hidden=true; elRespuesta.hidden=false;
 
     estado.resuelto=true; btnReiniciar.hidden=false;
@@ -339,11 +353,20 @@
     document.querySelectorAll('.signo-btn').forEach(x=>x.setAttribute('aria-pressed','false'));
     btn.setAttribute('aria-pressed','true');
     const sg=ZODIACO[i];
+    const info=SIGNO_INFO[sg.nombre];
+    const sem=lecturaSemanal(i);
     let html='<h3>'+sg.simbolo+' '+sg.nombre+'</h3>';
-    html+='<p class="signo-meta">'+sg.rango+' · elemento '+sg.elemento+'</p>';
+    html+='<p class="signo-meta">'+sg.rango+' · '+sg.elemento;
+    if (info) html+=' · '+info.modalidad+' · regido por '+info.regente;
+    html+='</p>';
+    if (info) html+='<div class="signo-parte"><h4>El signo, en breve</h4><p>'+info.rasgos+'</p></div>';
+    html+='<div class="signo-semana"><h4>Lectura de la semana '+sem.semana+'</h4><p>'+sem.texto+'</p>'+
+          '<span class="signo-semana-nota">Rota cada semana. Es una guía amplia para pensar, no astrología literal ni texto del libro.</span></div>';
+    html+='<details class="signo-1855"><summary>Lo que dice el libro de 1855</summary>';
     if (sg.varon) html+='<div class="signo-parte"><h4>El varón nacido bajo este signo</h4><p>'+sg.varon+'</p></div>';
     if (sg.mujer) html+='<div class="signo-parte"><h4>La mujer nacida bajo este signo</h4><p>'+sg.mujer+'</p></div>';
     if (!sg.varon && !sg.mujer) html+='<p class="signo-vacio">El facsímil dejó este pasaje ilegible.</p>';
+    html+='</details>';
     elSignoDetalle.innerHTML=html; elSignoDetalle.hidden=false;
     elSignoDetalle.scrollIntoView({block:'nearest',behavior:'smooth'});
   }

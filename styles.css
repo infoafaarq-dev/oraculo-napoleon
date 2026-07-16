@@ -419,3 +419,39 @@ details[open] .panel-cab-summary::after{content:"−";}
   *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important;}
   body{background-attachment:scroll;}
 }
+
+/* ---------------- Consejo del día ---------------- */
+.consejo-dia{
+  margin-top:16px;padding:14px 16px;
+  border:1px solid var(--nilo);border-radius:var(--r-s);
+  background:rgba(74,122,92,.08);animation:emerger .4s ease;
+}
+.consejo-rotulo{
+  font-family:var(--utilitaria);font-size:.62rem;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--nilo);display:block;margin-bottom:7px;
+}
+.consejo-texto{margin:0 0 7px;font-family:var(--display);font-size:1.04rem;line-height:1.5;color:var(--sepia);}
+.consejo-nota{font-family:var(--utilitaria);font-size:.58rem;line-height:1.5;color:var(--sepia-suave);display:block;}
+
+/* ---------------- Lectura semanal y descripción del signo ---------------- */
+.signo-semana{
+  margin:0 0 14px;padding:12px 14px;
+  border-left:3px solid var(--nilo);background:rgba(74,122,92,.07);
+  border-radius:0 var(--r-s) var(--r-s) 0;
+}
+.signo-semana h4{margin:0 0 5px;font-family:var(--utilitaria);font-size:.62rem;letter-spacing:.12em;text-transform:uppercase;color:var(--nilo);}
+.signo-semana p{margin:0 0 6px;font-family:var(--display);font-size:1rem;line-height:1.5;color:var(--sepia);}
+.signo-semana-nota{font-family:var(--utilitaria);font-size:.56rem;line-height:1.5;color:var(--sepia-suave);}
+.signo-1855{margin-top:6px;}
+.signo-1855 summary{cursor:pointer;font-family:var(--utilitaria);font-size:.64rem;letter-spacing:.08em;text-transform:uppercase;color:var(--ocre);text-decoration:underline;text-underline-offset:3px;}
+.signo-1855 summary:hover{color:var(--cinabrio);}
+.signo-1855[open] summary{margin-bottom:10px;}
+
+/* Respuesta recuperada del facsímil (confianza media) */
+.respuesta-texto.recuperada{position:relative;}
+.respuesta-texto.recuperada::after{
+  content:"texto recuperado del facsímil dañado — puede tener imprecisiones";
+  display:block;margin-top:10px;
+  font-family:var(--utilitaria);font-size:.58rem;font-style:normal;letter-spacing:.04em;
+  color:var(--ocre);text-transform:uppercase;
+}
